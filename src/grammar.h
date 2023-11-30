@@ -12,7 +12,7 @@
 class ProductionSymbol {
    public:
     enum class Kind { Uninitialized, NonTerminal, Terminal };
-    ProductionSymbol(std::string& symbol, Kind kind)
+    ProductionSymbol(const std::string& symbol, Kind kind)
         : kind(kind), raw_symbol(symbol) {}
 
     ProductionSymbol() : kind(Kind::Uninitialized), raw_symbol("") {}
@@ -20,10 +20,11 @@ class ProductionSymbol {
     bool isTerminal() const { return kind == Kind::Terminal; }
     bool isNonTerminal() const { return kind == Kind::NonTerminal; }
     bool isInitalized() const { return kind != Kind::Uninitialized; }
+    bool isEpsilon()     const { return !raw_symbol.has_value(); }
 
    private:
     Kind kind;
-    std::string raw_symbol;
+    std::optional<std::string> raw_symbol;
     friend class fmt::formatter<ProductionSymbol>;
 };
 
@@ -33,7 +34,7 @@ class fmt::formatter<ProductionSymbol> {
     constexpr auto parse(format_parse_context& ctx) { return ctx.end(); }
     template <typename FmtContext>
     constexpr auto format(ProductionSymbol const& ps, FmtContext& ctx) const {
-        return format_to(ctx.out(), "{}", ps.raw_symbol);
+        return format_to(ctx.out(), "{}", ps.raw_symbol.value_or("epsilon"));
     }
 };
 

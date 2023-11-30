@@ -115,6 +115,10 @@ Symbol : NONTERMINAL
                $$ = ProductionSymbol($1, ProductionSymbol::Kind::Terminal);
                spdlog::debug("parsed Terminal Symbol!");
            }
+       | /* Empty */
+           {
+               $$ = ProductionSymbol("", ProductionSymbol::Kind::Terminal);
+           }
        ;
 %%
 
