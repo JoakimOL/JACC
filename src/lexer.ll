@@ -15,7 +15,7 @@ ALT "|"
 SEMICOLON ";"
 COLON ":"
 
-NONTERMINAL [A-Z]+
+NONTERMINAL [A-Z][A-Z0-9_\-']*
 TERMINAL [^ \r\n\t:;#\/\\]+
 
 WHITESPACE [ \r\t]*
