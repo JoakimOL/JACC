@@ -15,11 +15,11 @@ class ProductionSymbol {
     ProductionSymbol(const std::string& symbol, Kind kind)
         : kind(kind), raw_symbol(symbol) {}
 
-    ProductionSymbol() : kind(Kind::Uninitialized), raw_symbol("") {}
+    ProductionSymbol() : kind(Kind::Uninitialized) {}
 
-    bool isTerminal() const { return kind == Kind::Terminal; }
+    bool isTerminal()    const { return kind == Kind::Terminal; }
     bool isNonTerminal() const { return kind == Kind::NonTerminal; }
-    bool isInitalized() const { return kind != Kind::Uninitialized; }
+    bool isInitialized()  const { return kind != Kind::Uninitialized; }
     bool isEpsilon()     const { return !raw_symbol.has_value(); }
 
    private:
