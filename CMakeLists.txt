@@ -14,7 +14,8 @@ FLEX_TARGET(GrammarLexer src/lexer.ll ${CMAKE_CURRENT_BINARY_DIR}/generated/lexe
 
 ADD_FLEX_BISON_DEPENDENCY(GrammarLexer GrammarParser)
 
-# fetch latest argparse
+# fetch argparse
+# pinned version because stability in my life
 include(FetchContent)
 FetchContent_Declare(
     argparse
@@ -29,6 +30,10 @@ set(SOURCES
     src/main.cpp
     src/grammar.cpp
     src/driver.cpp
+)
+
+add_custom_target(generate-directory ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
 add_executable(ffgenerator ${SOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_GrammarLexer_OUTPUTS})
