@@ -3,22 +3,23 @@
 #include <map>
 #include <string>
 
-#include "parser.h"
 #include "grammar.h"
+#include "parser.h"
 
 /*
  * Shamelessly "inspired" by GNU Bison example code
  */
 
 // magic that makes both the lexer and parser happy
-#define YY_DECL yy::parser::symbol_type yylex(Driver& drv)
+#define YY_DECL yy::parser::symbol_type yylex(Driver &drv)
 YY_DECL;
 
-class Driver {
-   public:
+class Driver
+{
+  public:
     Driver();
 
-    int parse(const std::string& f);
+    int parse(const std::string &f);
 
     std::string file;
     // Whether to generate parser debug traces.
@@ -34,4 +35,4 @@ class Driver {
 
     Grammar grammar;
 };
-#endif  // ! DRIVER_HH
+#endif // DRIVER_HH

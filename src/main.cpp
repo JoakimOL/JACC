@@ -4,10 +4,11 @@
 
 #include "argparse/argparse.hpp"
 #include "driver.h"
-#include "grammar.h"
 #include "fmt/ranges.h"
+#include "grammar.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
     argparse::ArgumentParser program(argv[0]);
     program.add_argument("-f");
     program.add_argument("-v").default_value(false).implicit_value(true);
