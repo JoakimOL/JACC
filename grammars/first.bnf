@@ -1,0 +1,7 @@
+A : B 'b' 'c'
+  | C 'b' 'c'
+  | _epsilon_;
+B : 'w'
+  | _epsilon_;
+C : 'd'
+  | _epsilon_;

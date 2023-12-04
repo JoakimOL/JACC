@@ -30,6 +30,7 @@ set(SOURCES
     src/main.cpp
     src/grammar.cpp
     src/driver.cpp
+    src/firstfollow.cpp
 )
 
 add_custom_target(generate-directory ALL

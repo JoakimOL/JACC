@@ -30,6 +30,15 @@ class ProductionSymbol
         return ProductionSymbol(std::nullopt, Kind::Terminal);
     }
 
+    bool operator<(const ProductionSymbol &other) const
+    {
+        return this->raw_symbol < other.raw_symbol;
+    }
+    bool operator==(const ProductionSymbol &other) const
+    {
+        return this->raw_symbol == other.raw_symbol && this->kind == other.kind;
+    }
+
   private:
     Kind kind;
     std::optional<std::string> raw_symbol;
@@ -81,6 +90,8 @@ class Production
         return production_symbols;
     }
 
+    size_t get_num_symbols() const { return production_symbols.size(); }
+
   private:
     std::vector<ProductionSymbol> production_symbols;
     friend class fmt::formatter<Production>;
@@ -112,6 +123,9 @@ class GrammarRule
     {
     }
 
+    const ProductionSymbol &get_LHS() const { return LHS; }
+    const std::vector<Production> &get_productions() const { return RHS; }
+
   private:
     ProductionSymbol LHS;
     std::vector<Production> RHS;
@@ -135,6 +149,8 @@ class Grammar
     Grammar() : rules({}) {}
     Grammar(GrammarRule rule) : rules({rule}) {}
     Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
+
+    const std::vector<GrammarRule> &get_rules() const { return rules; }
 
   private:
     std::optional<std::string> grammar_string = std::nullopt;
