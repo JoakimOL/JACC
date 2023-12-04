@@ -13,7 +13,10 @@ class ProductionSymbol
 {
   public:
     enum class Kind { Uninitialized, NonTerminal, Terminal };
-    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind) : kind(kind), raw_symbol(symbol) {}
+    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind)
+        : kind(kind), raw_symbol(symbol)
+    {
+    }
 
     ProductionSymbol() : kind(Kind::Uninitialized) {}
 
@@ -22,7 +25,10 @@ class ProductionSymbol
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
 
-    static ProductionSymbol create_epsilon() { return ProductionSymbol(std::nullopt, Kind::Terminal); }
+    static ProductionSymbol create_epsilon()
+    {
+        return ProductionSymbol(std::nullopt, Kind::Terminal);
+    }
 
   private:
     Kind kind;
@@ -51,23 +57,32 @@ template <> class fmt::formatter<ProductionSymbol>
 class Production
 {
   public:
-    Production() : RHS({}) {}
-    Production(std::vector<ProductionSymbol> RHS) : RHS(RHS)
+    Production() : production_symbols({}) {}
+
+    Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS)
     {
         spdlog::info("constructing Production with RHS = {}", RHS);
     }
+
     Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS})
     {
         spdlog::info("constructing Production with RHS = {}", RHS);
     }
-    bool contains_epsilon()
+
+    bool contains_epsilon() const
     {
-        return (std::find_if(RHS.cbegin(), RHS.cend(),
-                             [](ProductionSymbol p) { return p.is_epsilon(); }) != std::end(RHS));
+        return (std::find_if(production_symbols.cbegin(), production_symbols.cend(),
+                             [](ProductionSymbol p) { return p.is_epsilon(); }) !=
+                std::end(production_symbols));
+    }
+
+    const std::vector<ProductionSymbol> &get_production_symbols() const
+    {
+        return production_symbols;
     }
 
   private:
-    std::vector<ProductionSymbol> RHS;
+    std::vector<ProductionSymbol> production_symbols;
     friend class fmt::formatter<Production>;
 };
 
@@ -77,7 +92,7 @@ template <> class fmt::formatter<Production>
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
     template <typename FmtContext> constexpr auto format(Production const &p, FmtContext &ctx) const
     {
-        return format_to(ctx.out(), "{}", p.RHS);
+        return format_to(ctx.out(), "{}", p.production_symbols);
     }
 };
 
