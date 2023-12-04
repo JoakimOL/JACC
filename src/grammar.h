@@ -1,7 +1,6 @@
 #ifndef GRAMMAR_H_
 #define GRAMMAR_H_
 
-#include <cassert>
 #include <optional>
 #include <string>
 #include <vector>
