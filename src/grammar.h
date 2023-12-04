@@ -40,6 +40,9 @@ class fmt::formatter<ProductionSymbol> {
 /**
  * A production is a one-to-one mapping between LHS and RHS
  * A grammar rule is made of one or more productions
+ *
+ * A : B b <- only this line
+ *   | C c; <- or only this line
  */
 class Production {
    public:
@@ -69,6 +72,8 @@ class fmt::formatter<Production> {
 
 /**
  * A grammar rule is a LHS with one or more productions (RHS)
+ * A : B b
+ *   | C c;
  */
 class GrammarRule {
    public:
