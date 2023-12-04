@@ -33,6 +33,7 @@
   ALTERNATIVE
   COLON
   SEMICOLON
+  EPSILON
 ;
 
 %token <std::string> TERMINAL
@@ -115,9 +116,10 @@ Symbol : NONTERMINAL
                $$ = ProductionSymbol($1, ProductionSymbol::Kind::Terminal);
                spdlog::debug("parsed Terminal Symbol!");
            }
-       | /* Empty */
+       | EPSILON
            {
-               $$ = ProductionSymbol("", ProductionSymbol::Kind::Terminal);
+               $$ = ProductionSymbol::create_epsilon();
+               spdlog::debug("parsed epsilon!");
            }
        ;
 %%

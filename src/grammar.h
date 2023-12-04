@@ -13,7 +13,7 @@ class ProductionSymbol
 {
   public:
     enum class Kind { Uninitialized, NonTerminal, Terminal };
-    ProductionSymbol(const std::string &symbol, Kind kind) : kind(kind), raw_symbol(symbol) {}
+    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind) : kind(kind), raw_symbol(symbol) {}
 
     ProductionSymbol() : kind(Kind::Uninitialized) {}
 
@@ -21,6 +21,8 @@ class ProductionSymbol
     bool is_nonTerminal() const { return kind == Kind::NonTerminal; }
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
+
+    static ProductionSymbol create_epsilon() { return ProductionSymbol(std::nullopt, Kind::Terminal); }
 
   private:
     Kind kind;

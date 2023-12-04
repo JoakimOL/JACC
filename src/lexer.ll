@@ -15,6 +15,7 @@ ALT "|"
 SEMICOLON ";"
 COLON ":"
 
+EPSILON "_"(EPSILON|epsilon)"_"
 NONTERMINAL [A-Z][A-Z0-9_\-']*
 TERMINAL [^ \r\n\t:;#\/\\]+
 
@@ -44,6 +45,7 @@ COMMENT "\/\/"[^\r\n]*
 {ALT}          { spdlog::debug("lexed ALT");                     return yy::parser::make_ALTERNATIVE (loc);}
 {COLON}        { spdlog::debug("lexed COLON");                   return yy::parser::make_COLON       (loc);}
 {SEMICOLON}    { spdlog::debug("lexed SEMICOLON");               return yy::parser::make_SEMICOLON   (loc);}
+{EPSILON}      { spdlog::debug("lexed epsilon");                 return yy::parser::make_EPSILON(loc);     }
 {NONTERMINAL}  { spdlog::debug("lexed NONTERMINAL: {}", yytext); return yy::parser::make_NONTERMINAL (yytext, loc);}
 {TERMINAL}     { spdlog::debug("lexed TERMINAL: {}", yytext);    return yy::parser::make_TERMINAL    (yytext, loc);}
 
