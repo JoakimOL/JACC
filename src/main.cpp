@@ -4,7 +4,6 @@
 
 #include "argparse/argparse.hpp"
 #include "driver.h"
-#include "firstfollow.h"
 #include "fmt/ranges.h"
 #include "grammar.h"
 
@@ -24,6 +23,6 @@ int main(int argc, char *argv[])
     driver.parse(filename.value());
     spdlog::info(driver.grammar);
 
-
-    generate_first_sets(driver.grammar);
+    Grammar::set_map<ProductionSymbol> first_sets = driver.grammar.generate_first_sets();
+    spdlog::info(first_sets);
 }

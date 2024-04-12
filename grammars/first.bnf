@@ -1,6 +1,5 @@
 A : B 'b' 'c'
-  | C 'b' 'c'
-  | _epsilon_;
+  | C 'b' 'c';
 B : 'w'
   | _epsilon_;
 C : 'd'

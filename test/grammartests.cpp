@@ -1,4 +1,3 @@
-#include "firstfollow.h"
 #include "grammar.h"
 #include <gtest/gtest.h>
 
@@ -69,7 +68,7 @@ TEST(Grammars, FirstSetOfTerminalIsSelf)
     auto terminal = ProductionSymbol{"f", ProductionSymbol::Kind::Terminal};
     auto grammar = Grammar{GrammarRule{non_terminal, Production{terminal}}};
 
-    auto first_set = generate_first_sets(grammar)[non_terminal];
+    auto first_set = grammar.generate_first_sets()[non_terminal];
     auto search = first_set.find(terminal);
 
     EXPECT_TRUE(search != first_set.end())

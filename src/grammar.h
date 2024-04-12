@@ -2,7 +2,9 @@
 #define GRAMMAR_H_
 
 #include <algorithm>
+#include <map>
 #include <optional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -78,11 +80,24 @@ class Production
         spdlog::info("constructing Production with RHS = {}", RHS);
     }
 
+    /**
+     * this function looks for productions that look like this
+     * A : a
+     *   | ε;
+     */
     bool contains_epsilon() const
     {
         return (std::find_if(production_symbols.cbegin(), production_symbols.cend(),
                              [](ProductionSymbol p) { return p.is_epsilon(); }) !=
                 std::end(production_symbols));
+    }
+    /**
+     * this function looks for productions that look like this
+     * A : ε;
+     */
+    bool is_epsilon() const
+    {
+        return production_symbols.size() == 1 && production_symbols.front().is_epsilon();
     }
 
     const std::vector<ProductionSymbol> &get_production_symbols() const
@@ -108,7 +123,7 @@ template <> class fmt::formatter<Production>
 };
 
 /**
- * A grammar rule is a LHS with one or more productions (RHS)
+ * A grammar rule is a ProductionSymbol (LHS) with one or more productions (RHS)
  * A : B b
  *   | C c;
  */
@@ -146,15 +161,21 @@ template <> class fmt::formatter<GrammarRule>
 class Grammar
 {
   public:
+    template <class T> using set_map = std::map<ProductionSymbol, std::set<T>>;
     Grammar() : rules({}) {}
     Grammar(GrammarRule rule) : rules({rule}) {}
     Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
 
     const std::vector<GrammarRule> &get_rules() const { return rules; }
+    const std::optional<GrammarRule> get_rule(const ProductionSymbol &p) const;
+    Grammar::set_map<ProductionSymbol> generate_first_sets();
 
   private:
+    std::set<ProductionSymbol> first(const ProductionSymbol &p);
+    std::set<ProductionSymbol> first(const Production &p);
     std::optional<std::string> grammar_string = std::nullopt;
     std::vector<GrammarRule> rules;
+    set_map<ProductionSymbol> first_sets;
     friend class fmt::formatter<Grammar>;
 };
 
