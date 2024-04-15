@@ -87,7 +87,7 @@ bool generate_first_set(const GrammarRule &grammar_rule,
     return changed;
 }
 
-void generate_first_sets(const Grammar &grammar)
+std::map<ProductionSymbol, std::set<ProductionSymbol>> generate_first_sets(const Grammar &grammar)
 {
     auto rules = grammar.get_rules();
     bool changed = true;
@@ -101,5 +101,6 @@ void generate_first_sets(const Grammar &grammar)
         i++;
     }
     pretty_print_first_set(first_sets);
+    return first_sets;
 }
 

@@ -15,7 +15,6 @@ FLEX_TARGET(GrammarLexer src/lexer.ll ${CMAKE_CURRENT_BINARY_DIR}/generated/lexe
 ADD_FLEX_BISON_DEPENDENCY(GrammarLexer GrammarParser)
 
 # fetch argparse
-# pinned version because stability in my life
 include(FetchContent)
 FetchContent_Declare(
     argparse
@@ -24,26 +23,49 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(argparse)
 
+# fetch googletest
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/7c07a863693b0c831f80473f7c6905d7e458682c.zip
+)
+
+FetchContent_MakeAvailable(googletest)
+
 message(${CMAKE_CURRENT_BINARY_DIR})
 message(${CMAKE_CURRENT_SOURCE_DIR})
-set(SOURCES
-    src/main.cpp
+set(COMMONSOURCES
     src/grammar.cpp
-    src/driver.cpp
     src/firstfollow.cpp
+)
+set(MAINSOURCES
+    src/main.cpp
+    src/driver.cpp
+    ${COMMONSOURCES}
+)
+set(TESTSOURCES
+    test/grammartests.cpp
+    ${COMMONSOURCES}
 )
 
 add_custom_target(generate-directory ALL
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
-add_executable(ffgenerator ${SOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_GrammarLexer_OUTPUTS})
+enable_testing()
+
+add_executable(ffgenerator ${MAINSOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_GrammarLexer_OUTPUTS})
+add_executable(fftest ${TESTSOURCES})
 
 set_target_properties(ffgenerator PROPERTIES CXX_STANDARD 17)
+set_target_properties(fftest PROPERTIES CXX_STANDARD 17)
 
 target_include_directories(
     ffgenerator PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}/generated
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+target_include_directories(
+    fftest PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
@@ -59,3 +81,12 @@ target_link_libraries(ffgenerator PRIVATE
     spdlog::spdlog
     argparse
 )
+
+target_link_libraries(fftest PRIVATE
+    spdlog::spdlog
+    argparse
+    GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(fftest)

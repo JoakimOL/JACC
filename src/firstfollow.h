@@ -7,7 +7,7 @@
 
 #include "grammar.h"
 
-void generate_first_sets(const Grammar &grammar);
+std::map<ProductionSymbol, std::set<ProductionSymbol>> generate_first_sets(const Grammar &grammar);
 
 bool generate_first_set(const ProductionSymbol &LHS, const std::vector<Production> &RHS,
                         std::map<ProductionSymbol, std::set<ProductionSymbol>> &first_sets,
