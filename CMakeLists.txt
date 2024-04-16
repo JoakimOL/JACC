@@ -35,7 +35,6 @@ message(${CMAKE_CURRENT_BINARY_DIR})
 message(${CMAKE_CURRENT_SOURCE_DIR})
 set(COMMONSOURCES
     src/grammar.cpp
-    src/firstfollow.cpp
 )
 set(MAINSOURCES
     src/main.cpp
