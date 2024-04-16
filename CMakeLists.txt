@@ -34,11 +34,11 @@ FetchContent_MakeAvailable(googletest)
 message(${CMAKE_CURRENT_BINARY_DIR})
 message(${CMAKE_CURRENT_SOURCE_DIR})
 set(COMMONSOURCES
+    src/driver.cpp
     src/grammar.cpp
 )
 set(MAINSOURCES
     src/main.cpp
-    src/driver.cpp
     ${COMMONSOURCES}
 )
 set(TESTSOURCES
@@ -53,7 +53,10 @@ add_custom_target(generate-directory ALL
 enable_testing()
 
 add_executable(ffgenerator ${MAINSOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_GrammarLexer_OUTPUTS})
-add_executable(fftest ${TESTSOURCES})
+add_executable(fftest ${TESTSOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_GrammarLexer_OUTPUTS})
+
+target_compile_definitions(fftest PUBLIC EXAMPLE_GRAMMAR_DIR="${CMAKE_CURRENT_SOURCE_DIR}/grammars/")
+
 
 set_target_properties(ffgenerator PROPERTIES CXX_STANDARD 17)
 set_target_properties(fftest PROPERTIES CXX_STANDARD 17)
@@ -65,6 +68,7 @@ target_include_directories(
 )
 target_include_directories(
     fftest PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/generated
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

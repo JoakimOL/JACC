@@ -1,3 +1,4 @@
+#include "driver.h"
 #include "grammar.h"
 #include <gtest/gtest.h>
 
@@ -62,7 +63,7 @@ TEST(Grammars, ProductionsCanFindEpsilon)
     EXPECT_TRUE(non_terminal_production_with_epsilon.contains_epsilon());
 }
 
-TEST(Grammars, FirstSetOfTerminalIsSelf)
+TEST(FirstSetGeneration, FirstSetOfTerminalIsSelf)
 {
     auto non_terminal = ProductionSymbol{"F", ProductionSymbol::Kind::NonTerminal};
     auto terminal = ProductionSymbol{"f", ProductionSymbol::Kind::Terminal};
@@ -74,4 +75,55 @@ TEST(Grammars, FirstSetOfTerminalIsSelf)
     EXPECT_TRUE(search != first_set.end())
         << fmt::format("grammar:{}\nfirst_set:{}", grammar, first_set);
     EXPECT_EQ(*search, terminal);
+}
+
+TEST(FirstSetGeneration, CanGenerateFirstSetFromFile)
+{
+    Driver driver;
+    driver.parse(std::string{EXAMPLE_GRAMMAR_DIR}.append("test.bnf"));
+    auto first_set_actual = driver.grammar.generate_first_sets();
+    auto first_set_correct = std::map<ProductionSymbol, std::set<ProductionSymbol>>{
+        {ProductionSymbol("S", ProductionSymbol::Kind::NonTerminal),
+         std::set{ProductionSymbol("1", ProductionSymbol::Kind::Terminal),
+                  ProductionSymbol("2", ProductionSymbol::Kind::Terminal)}}};
+    EXPECT_EQ(first_set_actual, first_set_correct);
+}
+
+TEST(FirstSetGeneration, CanGenerateFirstSetFromExpressionExample)
+{
+    // non terminals
+    auto e = ProductionSymbol{"E", ProductionSymbol::Kind::NonTerminal};
+    auto ep = ProductionSymbol{"E'", ProductionSymbol::Kind::NonTerminal};
+    auto t = ProductionSymbol{"T", ProductionSymbol::Kind::NonTerminal};
+    auto tp = ProductionSymbol{"T'", ProductionSymbol::Kind::NonTerminal};
+    auto f = ProductionSymbol{"F", ProductionSymbol::Kind::NonTerminal};
+
+    // terminals
+    auto epsilon = ProductionSymbol::create_epsilon();
+    auto plus = ProductionSymbol{"+", ProductionSymbol::Kind::Terminal};
+    auto times = ProductionSymbol{"*", ProductionSymbol::Kind::Terminal};
+    auto lparen = ProductionSymbol{"(", ProductionSymbol::Kind::Terminal};
+    auto rparen = ProductionSymbol{")", ProductionSymbol::Kind::Terminal};
+    auto id = ProductionSymbol{"id", ProductionSymbol::Kind::Terminal};
+
+    // rules
+    auto e_rule = GrammarRule{e, Production{{t, ep}}};
+    auto ep_rule = GrammarRule{ep, {Production{{plus, t, ep}}, Production{epsilon}}};
+    auto t_rule = GrammarRule{t, Production{{f, tp}}};
+    auto tp_rule = GrammarRule{tp, {Production{{times, f, tp}}, Production{epsilon}}};
+    auto f_rule = GrammarRule{f, {Production{{lparen, e, rparen}}, Production{id}}};
+
+    //grammar
+    auto grammar = Grammar{{e_rule, ep_rule, t_rule, tp_rule, f_rule}};
+
+    auto first_set_actual = grammar.generate_first_sets();
+    auto first_set_correct = std::map<ProductionSymbol, std::set<ProductionSymbol>>{
+        {e, {lparen, id }},
+        {ep, {plus, epsilon}},
+        {t, {lparen, id }},
+        {tp, {times, epsilon}},
+        {f, {lparen, id }},
+    };
+
+    EXPECT_EQ(first_set_actual, first_set_correct);
 }
