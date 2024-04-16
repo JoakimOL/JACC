@@ -72,12 +72,12 @@ class Production
 
     Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS)
     {
-        spdlog::info("constructing Production with RHS = {}", RHS);
+        spdlog::debug("constructing Production with RHS = {}", RHS);
     }
 
     Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS})
     {
-        spdlog::info("constructing Production with RHS = {}", RHS);
+        spdlog::debug("constructing Production with RHS = {}", RHS);
     }
 
     /**

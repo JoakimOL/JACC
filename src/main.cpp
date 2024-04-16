@@ -17,12 +17,12 @@ int main(int argc, char *argv[])
         spdlog::set_level(spdlog::level::debug);
     }
     auto filename = program.present("-f");
-    spdlog::info(filename.has_value() ? *filename : "nullopt");
+    spdlog::info("filename: {}", filename.has_value() ? *filename : "nullopt");
 
     Driver driver;
     driver.parse(filename.value());
-    spdlog::info(driver.grammar);
+    spdlog::info("grammar: {}", driver.grammar);
 
     Grammar::set_map<ProductionSymbol> first_sets = driver.grammar.generate_first_sets();
-    spdlog::info(first_sets);
+    spdlog::info("first sets: {}", first_sets);
 }
