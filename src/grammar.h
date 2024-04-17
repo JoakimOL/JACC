@@ -45,6 +45,10 @@ class ProductionSymbol
     Kind kind;
     std::optional<std::string> raw_symbol;
     friend class fmt::formatter<ProductionSymbol>;
+    friend void PrintTo(const ProductionSymbol &p, std::ostream *out)
+    {
+        *out << fmt::format("{}", p);
+    }
 };
 
 template <> class fmt::formatter<ProductionSymbol>
