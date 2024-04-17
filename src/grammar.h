@@ -74,12 +74,12 @@ class Production
   public:
     Production() : production_symbols({}) {}
 
-    Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS)
+    explicit Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS)
     {
         spdlog::debug("constructing Production with RHS = {}", RHS);
     }
 
-    Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS})
+    explicit Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS})
     {
         spdlog::debug("constructing Production with RHS = {}", RHS);
     }
@@ -135,9 +135,9 @@ class GrammarRule
 {
   public:
     GrammarRule() : LHS(), RHS({}) {}
-    GrammarRule(ProductionSymbol LHS, std::vector<Production> RHSs) : LHS(LHS), RHS(RHSs) {}
+    explicit GrammarRule(ProductionSymbol LHS, std::vector<Production> RHSs) : LHS(LHS), RHS(RHSs) {}
 
-    GrammarRule(ProductionSymbol LHS, Production RHS)
+    explicit GrammarRule(ProductionSymbol LHS, Production RHS)
         : GrammarRule(LHS, std::vector<Production>{RHS})
     {
     }
@@ -167,8 +167,8 @@ class Grammar
   public:
     template <class T> using set_map = std::map<ProductionSymbol, std::set<T>>;
     Grammar() : rules({}) {}
-    Grammar(GrammarRule rule) : rules({rule}) {}
-    Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
+    explicit Grammar(GrammarRule rule) : rules({rule}) {}
+    explicit Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
 
     const std::vector<GrammarRule> &get_rules() const { return rules; }
     const std::optional<GrammarRule> get_rule(const ProductionSymbol &p) const;
