@@ -11,9 +11,12 @@ class FirstFollowSetGenerator
     template <class T> using set_map = std::map<ProductionSymbol, std::set<T>>;
     std::set<ProductionSymbol> first(const Production &p);
     std::set<ProductionSymbol> first(const ProductionSymbol &p);
+    std::set<ProductionSymbol> follow(const ProductionSymbol &p);
     set_map<ProductionSymbol> generate_first_sets();
+    set_map<ProductionSymbol> generate_follow_sets();
     set_map<ProductionSymbol> first_sets{};
-    const Grammar grammar;
+    set_map<ProductionSymbol> follow_sets{};
+    Grammar grammar;
 };
 
 #endif // FIRST_FOLLOW_SET_GENERATOR_H_

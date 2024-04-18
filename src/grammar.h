@@ -12,7 +12,7 @@
 class ProductionSymbol
 {
   public:
-    enum class Kind { Uninitialized, NonTerminal, Terminal };
+    enum class Kind { Uninitialized, NonTerminal, Terminal, EndOfInput };
     ProductionSymbol(const std::optional<std::string> &symbol, Kind kind)
         : kind(kind), raw_symbol(symbol)
     {
@@ -24,8 +24,10 @@ class ProductionSymbol
     bool is_nonTerminal() const { return kind == Kind::NonTerminal; }
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
+    bool is_EOI() const { return kind == Kind::EndOfInput; }
 
     static ProductionSymbol create_epsilon();
+    static ProductionSymbol create_EOI();
 
     bool operator<(const ProductionSymbol &other) const
     {
@@ -83,6 +85,8 @@ class Production
 
     size_t get_num_symbols() const;
 
+    std::optional<ProductionSymbol> synthesized_LHS;
+
   private:
     std::vector<ProductionSymbol> production_symbols;
     friend class fmt::formatter<Production>;
@@ -117,7 +121,7 @@ class GrammarRule
     }
 
     const ProductionSymbol &get_LHS() const { return LHS; }
-    const std::vector<Production> &get_productions() const { return RHS; }
+    std::vector<Production> &get_productions() { return RHS; }
     const bool rule_contains_epsilon_production() const;
 
   private:
@@ -144,8 +148,9 @@ class Grammar
     explicit Grammar(GrammarRule rule) : rules({rule}) {}
     explicit Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
 
-    const std::vector<GrammarRule> &get_rules() const { return rules; }
-    const std::optional<GrammarRule> get_rule(const ProductionSymbol &p) const;
+    std::vector<GrammarRule> &get_rules() { return rules; }
+    const std::optional<GrammarRule> get_production(const ProductionSymbol &p) const;
+    std::optional<std::vector<Production>> get_rules_containing_symbol(const ProductionSymbol &p);
 
   private:
     std::optional<std::string> grammar_string = std::nullopt;

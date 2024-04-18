@@ -33,4 +33,7 @@ int main(int argc, char *argv[])
     FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets = sets_generator.generate_first_sets();
     spdlog::info("first sets: {}", first_sets);
     if(generate_first_sets_only) return 0;
+
+    FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets = sets_generator.generate_follow_sets();
+    spdlog::info("follow sets: {}", follow_sets);
 }

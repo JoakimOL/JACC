@@ -6,7 +6,9 @@ ProductionSymbol ProductionSymbol::create_epsilon()
     return ProductionSymbol(std::nullopt, Kind::Terminal);
 }
 
-const std::optional<GrammarRule> Grammar::get_rule(const ProductionSymbol &p) const
+ProductionSymbol ProductionSymbol::create_EOI() { return ProductionSymbol("$", Kind::EndOfInput); }
+
+const std::optional<GrammarRule> Grammar::get_production(const ProductionSymbol &p) const
 {
     for (const GrammarRule &gr : rules) {
         if (gr.get_LHS() == p) {
@@ -31,4 +33,23 @@ const bool GrammarRule::rule_contains_epsilon_production() const
 {
     return std::find_if(RHS.begin(), RHS.end(), [](Production p) { return p.is_epsilon(); }) !=
            RHS.end();
+}
+
+std::optional<std::vector<Production>>
+Grammar::get_rules_containing_symbol(const ProductionSymbol &p)
+{
+    std::vector<Production> rules_containing_symbol{};
+    for (auto &rule : get_rules()) {
+        auto LHS = rule.get_LHS();
+        for (auto &production : rule.get_productions()) {
+            production.synthesized_LHS = LHS;
+            auto symbols = production.get_production_symbols();
+            spdlog::debug("looking for {} in {}", p, symbols);
+            if (std::find(symbols.begin(), symbols.end(), p) != symbols.end()) {
+                spdlog::debug("found {} in {}!", p, rule);
+                rules_containing_symbol.push_back(production);
+            }
+        }
+    }
+    return rules_containing_symbol;
 }

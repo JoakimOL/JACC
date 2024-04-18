@@ -17,6 +17,24 @@ Currently it is using Flex+Bison to parse the input grammar.
 
 These are things that were simply natural to me. However, I later discovered while researching that others might not agree so it felt worth while to note them down.
 
+### We assume the starting symbol is the top one in the grammar.
+For example
+```
+S : A
+  | B;
+A : 'a';
+B : 'b';
+```
+is perfectly fine, but controversely
+```
+A : 'a';
+B : 'b';
+S : A
+  | B;
+```
+is not okay, even though they describe the exact same thing.
+
+
 ### I prefer choices over multiple rules
 Some tools and articles I've seen tend to use multiple rules instead of choices.
 
