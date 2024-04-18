@@ -1,5 +1,6 @@
 #include "driver.h"
 #include "grammar.h"
+#include "first_follow_set_generator.h"
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 
@@ -88,7 +89,8 @@ TEST(FirstSetGeneration, FirstSetOfProductionWithOnlyTerminalIsSelf)
     auto terminal = ProductionSymbol{"f", ProductionSymbol::Kind::Terminal};
     auto grammar = Grammar{GrammarRule{non_terminal, Production{terminal}}};
 
-    auto first_set = grammar.generate_first_sets()[non_terminal];
+    auto set_generator = FirstFollowSetGenerator(grammar);
+    auto first_set = set_generator.generate_first_sets()[non_terminal];
     auto search = first_set.find(terminal);
 
     EXPECT_TRUE(search != first_set.end())
@@ -100,7 +102,9 @@ TEST(FirstSetGeneration, CanGenerateFirstSetFromFile)
 {
     Driver driver;
     driver.parse(std::string{EXAMPLE_GRAMMAR_DIR}.append("test.bnf"));
-    auto first_set_actual = driver.grammar.generate_first_sets();
+    auto set_generator = FirstFollowSetGenerator(driver.grammar);
+
+    auto first_set_actual = set_generator.generate_first_sets();
     auto first_set_correct = std::map<ProductionSymbol, std::set<ProductionSymbol>>{
         {ProductionSymbol("S", ProductionSymbol::Kind::NonTerminal),
          std::set{ProductionSymbol("1", ProductionSymbol::Kind::Terminal),
@@ -135,7 +139,8 @@ TEST(FirstSetGeneration, CanGenerateFirstSetFromExpressionExample)
     // grammar
     auto grammar = Grammar{{e_rule, ep_rule, t_rule, tp_rule, f_rule}};
 
-    auto first_set_actual = grammar.generate_first_sets();
+    auto set_generator = FirstFollowSetGenerator(grammar);
+    auto first_set_actual = set_generator.generate_first_sets();
     auto first_set_correct = std::map<ProductionSymbol, std::set<ProductionSymbol>>{
         {e, {lparen, id}},      {ep, {plus, epsilon}}, {t, {lparen, id}},
         {tp, {times, epsilon}}, {f, {lparen, id}},

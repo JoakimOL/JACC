@@ -2,9 +2,7 @@
 #define GRAMMAR_H_
 
 #include <algorithm>
-#include <map>
 #include <optional>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -27,10 +25,7 @@ class ProductionSymbol
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
 
-    static ProductionSymbol create_epsilon()
-    {
-        return ProductionSymbol(std::nullopt, Kind::Terminal);
-    }
+    static ProductionSymbol create_epsilon();
 
     bool operator<(const ProductionSymbol &other) const
     {
@@ -82,17 +77,11 @@ class Production
      * this function looks for productions that look like this
      * A : ε;
      */
-    bool is_epsilon() const
-    {
-        return production_symbols.size() == 1 && production_symbols.front().is_epsilon();
-    }
+    bool is_epsilon() const;
 
-    const std::vector<ProductionSymbol> &get_production_symbols() const
-    {
-        return production_symbols;
-    }
+    const std::vector<ProductionSymbol> &get_production_symbols() const;
 
-    size_t get_num_symbols() const { return production_symbols.size(); }
+    size_t get_num_symbols() const;
 
   private:
     std::vector<ProductionSymbol> production_symbols;
@@ -129,12 +118,7 @@ class GrammarRule
 
     const ProductionSymbol &get_LHS() const { return LHS; }
     const std::vector<Production> &get_productions() const { return RHS; }
-    const bool rule_contains_epsilon_production() const
-    {
-        return std::find_if(RHS.begin(), RHS.end(), [](Production p) {
-                   return p.is_epsilon();
-               }) != RHS.end();
-    }
+    const bool rule_contains_epsilon_production() const;
 
   private:
     ProductionSymbol LHS;
@@ -156,21 +140,16 @@ template <> class fmt::formatter<GrammarRule>
 class Grammar
 {
   public:
-    template <class T> using set_map = std::map<ProductionSymbol, std::set<T>>;
     Grammar() : rules({}) {}
     explicit Grammar(GrammarRule rule) : rules({rule}) {}
     explicit Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
 
     const std::vector<GrammarRule> &get_rules() const { return rules; }
     const std::optional<GrammarRule> get_rule(const ProductionSymbol &p) const;
-    Grammar::set_map<ProductionSymbol> generate_first_sets();
 
   private:
-    std::set<ProductionSymbol> first(const ProductionSymbol &p);
-    std::set<ProductionSymbol> first(const Production &p);
     std::optional<std::string> grammar_string = std::nullopt;
     std::vector<GrammarRule> rules;
-    set_map<ProductionSymbol> first_sets;
     friend class fmt::formatter<Grammar>;
 };
 
