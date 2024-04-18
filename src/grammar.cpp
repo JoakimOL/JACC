@@ -57,11 +57,13 @@ std::set<ProductionSymbol> Grammar::first(const Production &p)
 std::set<ProductionSymbol> Grammar::first(const ProductionSymbol &p)
 {
     spdlog::debug("{}({})", __func__, p);
-    assert(p.is_nonTerminal());
-    if (first_sets.find(p) != first_sets.end()) {
+    if (p.is_terminal())
+        return {p};
+    else if (first_sets.find(p) != first_sets.end()) {
         spdlog::debug("found cached value {}. returning", first_sets[p]);
         return first_sets[p];
     }
+    assert(p.is_nonTerminal());
     std::set<ProductionSymbol> first_set{};
 
     bool all_contains_epsilon = true;    // To keep track of rule 3

@@ -74,27 +74,10 @@ class Production
   public:
     Production() : production_symbols({}) {}
 
-    explicit Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS)
-    {
-        spdlog::debug("constructing Production with RHS = {}", RHS);
-    }
+    explicit Production(std::vector<ProductionSymbol> RHS) : production_symbols(RHS) {}
 
-    explicit Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS})
-    {
-        spdlog::debug("constructing Production with RHS = {}", RHS);
-    }
+    explicit Production(ProductionSymbol RHS) : Production(std::vector<ProductionSymbol>{RHS}) {}
 
-    /**
-     * this function looks for productions that look like this
-     * A : a
-     *   | ε;
-     */
-    bool contains_epsilon() const
-    {
-        return (std::find_if(production_symbols.cbegin(), production_symbols.cend(),
-                             [](ProductionSymbol p) { return p.is_epsilon(); }) !=
-                std::end(production_symbols));
-    }
     /**
      * this function looks for productions that look like this
      * A : ε;
@@ -135,7 +118,9 @@ class GrammarRule
 {
   public:
     GrammarRule() : LHS(), RHS({}) {}
-    explicit GrammarRule(ProductionSymbol LHS, std::vector<Production> RHSs) : LHS(LHS), RHS(RHSs) {}
+    explicit GrammarRule(ProductionSymbol LHS, std::vector<Production> RHSs) : LHS(LHS), RHS(RHSs)
+    {
+    }
 
     explicit GrammarRule(ProductionSymbol LHS, Production RHS)
         : GrammarRule(LHS, std::vector<Production>{RHS})
@@ -144,6 +129,12 @@ class GrammarRule
 
     const ProductionSymbol &get_LHS() const { return LHS; }
     const std::vector<Production> &get_productions() const { return RHS; }
+    const bool rule_contains_epsilon_production() const
+    {
+        return std::find_if(RHS.begin(), RHS.end(), [](Production p) {
+                   return p.is_epsilon();
+               }) != RHS.end();
+    }
 
   private:
     ProductionSymbol LHS;
