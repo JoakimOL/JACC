@@ -35,6 +35,7 @@ message(${CMAKE_CURRENT_BINARY_DIR})
 message(${CMAKE_CURRENT_SOURCE_DIR})
 set(COMMONSOURCES
     src/driver.cpp
+    src/first_follow_set_generator.cpp
     src/grammar.cpp
 )
 set(MAINSOURCES

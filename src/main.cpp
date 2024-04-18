@@ -4,7 +4,7 @@
 
 #include "argparse/argparse.hpp"
 #include "driver.h"
-#include "fmt/ranges.h"
+#include "first_follow_set_generator.h"
 #include "grammar.h"
 
 int main(int argc, char *argv[])
@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
     driver.parse(filename.value());
     spdlog::info("grammar: {}", driver.grammar);
 
-    Grammar::set_map<ProductionSymbol> first_sets = driver.grammar.generate_first_sets();
+    FirstFollowSetGenerator sets_generator(driver.grammar);
+    FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets = sets_generator.generate_first_sets();
     spdlog::info("first sets: {}", first_sets);
     if(generate_first_sets_only) return 0;
 }
