@@ -1,0 +1,48 @@
+PROGRAM: TOPLEVEL eof;
+
+TOPLEVEL: FUNCTIONDECLARATION
+        | FUNCTIONDEFINITION
+        | TYPEDEFINITION;
+
+STATEMENT: VARIABLEDECLARATION semicolon
+         | RETURNSTATEMENT semicolon
+         | EXPRESSIONSTATEMENT semicolon
+         | IFSTATEMENT
+         | BLOCK;
+
+IFSTATEMENT: ifkeyword EXPRESSION STATEMENT;
+FUNCTIONDECLARATION: ID PARAMETERLIST returnarrow TYPE;
+FUNCTIONDEFINITION: ID PARAMETERLIST assignment BLOCK;
+FUNCTIONCALL: ID ARGUMENTLIST;
+VARIABLEDECLARATION: TYPE ID assignment EXPRESSION;
+RETURNSTATEMENT: returnkeyword EXPRESSION;
+
+TYPEDEFINITION: newtype ID '=' PARAMETERLIST;
+
+ARGUMENTLIST: '(' expression ')';
+
+PARAMETERLIST: '(' TYPEDVALUE ')';
+
+EXPRESSIONSTATEMENT: EXPRESSION;
+
+BLOCK: '{' STATEMENT '}';
+
+TYPEDVALUE: TYPE ID;
+TYPE: typename
+    | ID;
+ID: id;
+LITERAL : int
+        | stringliteral;
+
+BINOP : equals
+      | lessthan
+      | plus
+      | minus
+      | mul
+      | greaterthan;
+
+EXPRESSION: ID
+          | LITERAL
+          | '(' EXPRESSION ')'
+          | EXPRESSION BINOP EXPRESSION
+          | FUNCTIONCALL;
