@@ -71,12 +71,14 @@ std::set<ProductionSymbol> FirstFollowSetGenerator::first(const ProductionSymbol
     bool should_contain_epsilon = false; // to keep track of rule 2
     if (auto rule = grammar.get_production(p); rule.has_value()) {
         auto productions = rule.value().get_productions();
-        for (const auto &p : productions) {
-            spdlog::debug("first({})", p);
-            if (p.is_epsilon())
+        for (const auto &production : productions) {
+            spdlog::debug("first({})", production);
+            if (production.is_epsilon())
                 should_contain_epsilon = true;
+            else if (production.get_production_symbols().front() == p)
+                break;
 
-            auto set = first(p);
+            auto set = first(production);
             if (set_contains_epsilon(set))
                 all_contains_epsilon = false;
             spdlog::debug("about to merge {} with {}", set, first_set);
