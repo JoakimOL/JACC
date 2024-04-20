@@ -8,7 +8,7 @@ Currently it is using Flex+Bison to parse the input grammar.
 
 - [X] Parse grammar files
 - [X] Generate FIRST sets
-- [ ] Generate FOLLOW sets
+- [X] Generate FOLLOW sets
 - [ ] Generate LR item collection
 - [ ] Generate Parser
 - [ ] Implement semantic actions
