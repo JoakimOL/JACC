@@ -13,27 +13,34 @@ int main(int argc, char *argv[])
     program.add_argument("-f");
     program.add_argument("-v").default_value(false).implicit_value(true);
     program.add_argument("--first").default_value(false).implicit_value(true);
+    program.add_argument("--follow").default_value(false).implicit_value(true);
     program.parse_args(argc, argv);
     if (program.is_used("-v")) {
         spdlog::set_level(spdlog::level::debug);
     }
 
     bool generate_first_sets_only = false;
+    bool generate_follow_sets_only = false;
     if (program.is_used("--first")) {
         generate_first_sets_only = true;
+    }
+    else if (program.is_used("--follow")) {
+        generate_follow_sets_only = true;
     }
     auto filename = program.present("-f");
     spdlog::info("filename: {}", filename.has_value() ? *filename : "nullopt");
 
     Driver driver;
     driver.parse(filename.value());
-    spdlog::info("grammar: {}", driver.grammar);
+    Grammar grammar = driver.grammar;
+    spdlog::info("grammar: {}", grammar);
 
-    FirstFollowSetGenerator sets_generator(driver.grammar);
+    FirstFollowSetGenerator sets_generator(grammar);
     FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets = sets_generator.generate_first_sets();
     spdlog::info("first sets: {}", first_sets);
     if(generate_first_sets_only) return 0;
 
     FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets = sets_generator.generate_follow_sets();
     spdlog::info("follow sets: {}", follow_sets);
+    if(generate_follow_sets_only) return 0;
 }

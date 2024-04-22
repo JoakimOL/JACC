@@ -8,15 +8,6 @@ ProductionSymbol ProductionSymbol::create_epsilon()
 
 ProductionSymbol ProductionSymbol::create_EOI() { return ProductionSymbol("$", Kind::EndOfInput); }
 
-const std::optional<GrammarRule> Grammar::get_production(const ProductionSymbol &p) const
-{
-    for (const GrammarRule &gr : rules) {
-        if (gr.get_LHS() == p) {
-            return gr;
-        }
-    }
-    return std::nullopt;
-}
 bool Production::is_epsilon() const
 {
     return production_symbols.size() == 1 && production_symbols.front().is_epsilon();
@@ -52,4 +43,14 @@ Grammar::get_rules_containing_symbol(const ProductionSymbol &p)
         }
     }
     return rules_containing_symbol;
+}
+
+const std::optional<GrammarRule> Grammar::get_production(const ProductionSymbol &p) const
+{
+    for (const GrammarRule &gr : rules) {
+        if (gr.get_LHS() == p) {
+            return gr;
+        }
+    }
+    return std::nullopt;
 }
