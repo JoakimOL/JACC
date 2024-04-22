@@ -38,26 +38,25 @@ FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::gene
 std::set<ProductionSymbol> FirstFollowSetGenerator::first(const Production &p)
 {
     std::set<ProductionSymbol> first_sets;
+    bool all_contains_epsilon = true; // To keep track of rule 3
     for (const ProductionSymbol &symbol : p.get_production_symbols()) {
 
-        // rule 1
-        if (symbol.is_terminal()) {
-            first_sets.emplace(symbol);
+        auto first_set = first(symbol);
+        bool contains_epsilon = set_contains_epsilon(first_set);
+        first_sets.merge(first_set);
+        if (!contains_epsilon) {
+            all_contains_epsilon = false;
             break;
-        } else if (symbol.is_nonTerminal()) {
-            auto first_set = first(symbol);
-            bool contains_epsilon = set_contains_epsilon(first_set);
-            first_sets.merge(first_set);
-            if (!contains_epsilon) {
-                break;
-            }
         }
     }
+    if (!all_contains_epsilon)
+        first_sets.erase(ProductionSymbol::create_epsilon());
     return first_sets;
 }
 std::set<ProductionSymbol> FirstFollowSetGenerator::first(const ProductionSymbol &p)
 {
     spdlog::debug("{}({})", __func__, p);
+    // rule 1
     if (p.is_terminal())
         return {p};
     else if (first_sets.find(p) != first_sets.end()) {
@@ -67,30 +66,22 @@ std::set<ProductionSymbol> FirstFollowSetGenerator::first(const ProductionSymbol
     assert(p.is_nonTerminal());
     std::set<ProductionSymbol> first_set{};
 
-    bool all_contains_epsilon = true;    // To keep track of rule 3
     bool should_contain_epsilon = false; // to keep track of rule 2
     if (auto rule = grammar.get_production(p); rule.has_value()) {
         auto productions = rule.value().get_productions();
         for (const auto &production : productions) {
-            spdlog::debug("first({})", production);
             if (production.is_epsilon())
                 should_contain_epsilon = true;
             else if (production.get_production_symbols().front() == p)
                 break;
 
             auto set = first(production);
-            if (set_contains_epsilon(set))
-                all_contains_epsilon = false;
-            spdlog::debug("about to merge {} with {}", set, first_set);
             first_set.merge(set);
         }
     }
 
-    if (!should_contain_epsilon && !all_contains_epsilon) {
-        spdlog::debug("Not all sets included epsilon. removing");
+    if (!should_contain_epsilon)
         first_set.erase(ProductionSymbol::create_epsilon());
-    }
-    spdlog::debug("about to return {} ", first_set);
     first_sets[p] = first_set;
     return first_set;
 }
