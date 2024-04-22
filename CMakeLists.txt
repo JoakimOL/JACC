@@ -44,6 +44,7 @@ set(MAINSOURCES
 )
 set(TESTSOURCES
     test/grammartests.cpp
+    test/firstfollowtests.cpp
     ${COMMONSOURCES}
 )
 
