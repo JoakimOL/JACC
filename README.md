@@ -4,12 +4,17 @@ This project aims to process an input grammar and output a parser for said gramm
 
 Currently it is using Flex+Bison to parse the input grammar.
 
+First tentative goal is to make an LL parser, as it has fewer requirements. Hopefully I'll get to LR at some point
+
 ## Progress list
 
 - [X] Parse grammar files
 - [X] Generate FIRST sets
 - [X] Generate FOLLOW sets
 - [ ] Generate LR item collection
+- [ ] Generate Parsing tables
+  - [ ] LL
+  - [ ] LR
 - [ ] Generate Parser
 - [ ] Implement semantic actions
 
