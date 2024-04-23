@@ -33,7 +33,6 @@ Grammar::get_rules_containing_symbol(const ProductionSymbol &p)
     for (auto &rule : get_rules()) {
         auto LHS = rule.get_LHS();
         for (auto &production : rule.get_productions()) {
-            production.synthesized_LHS = LHS;
             auto symbols = production.get_production_symbols();
             spdlog::debug("looking for {} in {}", p, symbols);
             if (std::find(symbols.begin(), symbols.end(), p) != symbols.end()) {

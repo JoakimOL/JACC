@@ -113,6 +113,7 @@ class GrammarRule
     GrammarRule() : LHS(), RHS({}) {}
     explicit GrammarRule(ProductionSymbol LHS, std::vector<Production> RHSs) : LHS(LHS), RHS(RHSs)
     {
+        std::for_each(RHS.begin(), RHS.end(), [LHS](Production &p) { p.synthesized_LHS = LHS; });
     }
 
     explicit GrammarRule(ProductionSymbol LHS, Production RHS)
