@@ -5,6 +5,7 @@
 #include "argparse/argparse.hpp"
 #include "driver.h"
 #include "first_follow_set_generator.h"
+#include "ll_table_generator.h"
 #include "grammar.h"
 
 int main(int argc, char *argv[])
@@ -43,4 +44,10 @@ int main(int argc, char *argv[])
     FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets = sets_generator.generate_follow_sets();
     spdlog::info("follow sets: {}", follow_sets);
     if(generate_follow_sets_only) return 0;
+
+    auto table = generate_ll_table(grammar, sets_generator);
+    spdlog::info("LL-parsing table:");
+    for(auto thing: table){
+        spdlog::info(thing);
+    }
 }

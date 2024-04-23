@@ -37,6 +37,10 @@ class ProductionSymbol
     {
         return this->raw_symbol == other.raw_symbol && this->kind == other.kind;
     }
+    bool operator!=(const ProductionSymbol &other) const
+    {
+        return !(*this == other);
+    }
 
   private:
     Kind kind;
@@ -86,6 +90,16 @@ class Production
     size_t get_num_symbols() const;
 
     std::optional<ProductionSymbol> synthesized_LHS;
+
+    bool operator==(const Production &other) const
+    {
+        auto num_symbols = get_num_symbols();
+        if(num_symbols != other.get_num_symbols()) return false;
+        for(size_t i = 0; i < num_symbols; i++){
+            if(production_symbols[i] != other.production_symbols[i]) return false;
+        }
+        return true;
+    }
 
   private:
     std::vector<ProductionSymbol> production_symbols;

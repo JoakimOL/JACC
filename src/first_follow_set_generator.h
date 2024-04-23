@@ -17,6 +17,9 @@ class FirstFollowSetGenerator
     set_map<ProductionSymbol> first_sets{};
     set_map<ProductionSymbol> follow_sets{};
     Grammar grammar;
+  private:
+    bool first_initialized = false;
+    bool follow_initialized = false;
 };
 
 #endif // FIRST_FOLLOW_SET_GENERATOR_H_

@@ -24,6 +24,7 @@ bool set_contains_epsilon(const std::set<ProductionSymbol> &set)
  */
 FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::generate_first_sets()
 {
+    if(first_initialized) return first_sets;
     set_map<ProductionSymbol> first_sets;
     for (auto &rule : grammar.get_rules()) {
         auto LHS = rule.get_LHS();
@@ -32,6 +33,7 @@ FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::gene
         auto first_set = first(LHS);
         first_sets[LHS] = first_set;
     }
+    first_initialized = true;
     return first_sets;
 }
 
@@ -95,6 +97,7 @@ std::set<ProductionSymbol> FirstFollowSetGenerator::first(const ProductionSymbol
 // in FOLLOW(B)
 FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::generate_follow_sets()
 {
+    if(follow_initialized) return follow_sets;
     auto rules = grammar.get_rules();
     // assuming start symbol is the first symbol
     follow_sets[rules.front().get_LHS()] =
@@ -119,6 +122,7 @@ FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::gene
             }
         }
     }
+    follow_initialized = true;
     return follow_sets;
 }
 
