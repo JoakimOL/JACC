@@ -8,7 +8,7 @@
 class FirstFollowSetGenerator
 {
   public:
-    explicit FirstFollowSetGenerator(const Grammar &g) : grammar(g){};
+    explicit FirstFollowSetGenerator(const Grammar &g) : grammar(g) {};
     template <class T> using set_map = std::map<ProductionSymbol, std::set<T>>;
     std::set<ProductionSymbol> first(const Production &p);
     std::set<ProductionSymbol> first(const ProductionSymbol &p);
@@ -18,6 +18,7 @@ class FirstFollowSetGenerator
     set_map<ProductionSymbol> first_sets{};
     set_map<ProductionSymbol> follow_sets{};
     Grammar grammar;
+
   private:
     bool first_initialized = false;
     bool follow_initialized = false;

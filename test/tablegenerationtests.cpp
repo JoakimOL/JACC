@@ -1,11 +1,11 @@
-#include "ll_table_generator.h"
 #include "first_follow_set_generator.h"
 #include "grammar.h"
+#include "ll_table_generator.h"
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 // #include <spdlog/spdlog.h>
 
-// TEST(TableGeneration, YeahIDunno) { 
+// TEST(TableGeneration, YeahIDunno) {
 
 //     // non terminals
 //     auto s = ProductionSymbol{"S", ProductionSymbol::Kind::NonTerminal};
@@ -36,8 +36,9 @@
 //     spdlog::info("parse_table: {}", parse_table_actual);
 // }
 
-TEST(TableGeneration, AbleToGenerateLLParseTableForExpressionGrammar) { 
-    
+TEST(TableGeneration, AbleToGenerateLLParseTableForExpressionGrammar)
+{
+
     // non terminals
     auto e = ProductionSymbol{"E", ProductionSymbol::Kind::NonTerminal};
     auto ep = ProductionSymbol{"E'", ProductionSymbol::Kind::NonTerminal};
@@ -68,17 +69,25 @@ TEST(TableGeneration, AbleToGenerateLLParseTableForExpressionGrammar) {
 
     auto parse_table_actual = generate_ll_table(grammar, set_generator);
     auto parse_table_correct = std::map<ProductionSymbol, std::map<ProductionSymbol, Production>>{
-        { e, std::map<ProductionSymbol, Production>{ {lparen, Production{{t, ep}}}, {id, Production{{t, ep}}} } },
-        { ep, std::map<ProductionSymbol, Production>{ {plus, Production{{plus, t, ep}}}, {rparen, Production{epsilon}}, {eoi, Production{epsilon}} } },
-        { t, std::map<ProductionSymbol, Production>{ {lparen, Production{{f, tp}}}, {id, Production{{f, tp}}} } },
-        { tp, std::map<ProductionSymbol, Production>{ {plus, Production{epsilon}}, {times, Production{{times, f, tp}}}, {rparen, Production{epsilon}}, {eoi, Production{epsilon}}} },
-        { f, std::map<ProductionSymbol, Production>{ {lparen, Production{{lparen, e, rparen}}}, {id, Production{id}} } },
+        {e, std::map<ProductionSymbol, Production>{{lparen, Production{{t, ep}}},
+                                                   {id, Production{{t, ep}}}}},
+        {ep, std::map<ProductionSymbol, Production>{{plus, Production{{plus, t, ep}}},
+                                                    {rparen, Production{epsilon}},
+                                                    {eoi, Production{epsilon}}}},
+        {t, std::map<ProductionSymbol, Production>{{lparen, Production{{f, tp}}},
+                                                   {id, Production{{f, tp}}}}},
+        {tp, std::map<ProductionSymbol, Production>{{plus, Production{epsilon}},
+                                                    {times, Production{{times, f, tp}}},
+                                                    {rparen, Production{epsilon}},
+                                                    {eoi, Production{epsilon}}}},
+        {f, std::map<ProductionSymbol, Production>{{lparen, Production{{lparen, e, rparen}}},
+                                                   {id, Production{id}}}},
     };
 
     EXPECT_EQ(parse_table_actual, parse_table_correct);
-
 }
-TEST(TableGeneration, GrammarsCanIdentifyNullableNonTerminals){
+TEST(TableGeneration, GrammarsCanIdentifyNullableNonTerminals)
+{
     auto a = ProductionSymbol{"A", ProductionSymbol::Kind::NonTerminal};
     auto b = ProductionSymbol{"B", ProductionSymbol::Kind::NonTerminal};
     auto c = ProductionSymbol{"C", ProductionSymbol::Kind::NonTerminal};
@@ -91,8 +100,8 @@ TEST(TableGeneration, GrammarsCanIdentifyNullableNonTerminals){
     auto a_rule = GrammarRule{a, Production{epsilon}};
     auto b_rule = GrammarRule{b, {Production{{foo}}, Production{epsilon}}};
     auto c_rule = GrammarRule{c, {Production{foo}}};
-    auto indirectly_nullable1 = GrammarRule {a, {Production{b}}};
-    auto indirectly_nullable2 = GrammarRule {b, {Production{epsilon}}};
+    auto indirectly_nullable1 = GrammarRule{a, {Production{b}}};
+    auto indirectly_nullable2 = GrammarRule{b, {Production{epsilon}}};
 
     // grammar
     auto directly_nullable_grammar = Grammar{{a_rule}};
@@ -100,16 +109,17 @@ TEST(TableGeneration, GrammarsCanIdentifyNullableNonTerminals){
     auto non_nullable_grammar = Grammar{{c_rule}};
     auto indirectly_nullable_grammar = Grammar{{indirectly_nullable1, indirectly_nullable2}};
 
-
     FirstFollowSetGenerator sets_generator(directly_nullable_grammar);
-    FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets = sets_generator.generate_first_sets();
-    FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets = sets_generator.generate_follow_sets();
+    FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets =
+        sets_generator.generate_first_sets();
+    FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets =
+        sets_generator.generate_follow_sets();
 
-    EXPECT_TRUE(is_nullable(a,directly_nullable_grammar));
+    EXPECT_TRUE(is_nullable(a, directly_nullable_grammar));
 
-    EXPECT_TRUE(is_nullable(a,nullable_grammar));
-    EXPECT_TRUE(is_nullable(b,nullable_grammar));
-    EXPECT_FALSE(is_nullable(c,non_nullable_grammar));
-    EXPECT_TRUE(is_nullable(a,indirectly_nullable_grammar));
-    EXPECT_TRUE(is_nullable(b,indirectly_nullable_grammar));
+    EXPECT_TRUE(is_nullable(a, nullable_grammar));
+    EXPECT_TRUE(is_nullable(b, nullable_grammar));
+    EXPECT_FALSE(is_nullable(c, non_nullable_grammar));
+    EXPECT_TRUE(is_nullable(a, indirectly_nullable_grammar));
+    EXPECT_TRUE(is_nullable(b, indirectly_nullable_grammar));
 }

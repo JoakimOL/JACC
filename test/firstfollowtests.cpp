@@ -152,7 +152,7 @@ TEST(FirstSetGeneration, FirstOfSeveralSymbolsIsFirstOfAllEpsilonSymbolsUntilNon
     auto set_generator = FirstFollowSetGenerator(grammar);
     auto first_set = set_generator.generate_first_sets()[start];
 
-    auto first_set_for_start_correct = std::set<ProductionSymbol>{terminal_f,terminal_g};
+    auto first_set_for_start_correct = std::set<ProductionSymbol>{terminal_f, terminal_g};
     EXPECT_EQ(first_set, first_set_for_start_correct)
         << fmt::format("grammar:{}\nfirst_set:{}", grammar, first_set);
 }

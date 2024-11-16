@@ -25,7 +25,8 @@ generate_ll_table(Grammar &grammar, FirstFollowSetGenerator &sets_generator)
                     // For each terminal `production_symbol` in `current_first_set`,
                     // add `production` to parsing_table[LHS,production_symbol]
                     parsing_table[LHS][production_symbol] = production;
-                    spdlog::debug("(no epsilon) wrote parsing_table[{}][{}] = {}", LHS, production_symbol, production);
+                    spdlog::debug("(no epsilon) wrote parsing_table[{}][{}] = {}", LHS,
+                                  production_symbol, production);
                 }
             }
             spdlog::debug("exiting loop");
@@ -37,14 +38,15 @@ generate_ll_table(Grammar &grammar, FirstFollowSetGenerator &sets_generator)
             spdlog::debug("follow set: {}", current_follow_set);
             for (auto &production_symbol : current_follow_set) {
                 parsing_table[LHS][production_symbol] = epsilon_production;
-                spdlog::debug("(epsilon) wrote parsing_table[{}][{}] = {}", LHS, production_symbol, epsilon_production);
+                spdlog::debug("(epsilon) wrote parsing_table[{}][{}] = {}", LHS, production_symbol,
+                              epsilon_production);
             }
         }
     }
     return parsing_table;
 }
 
-bool is_nullable(const ProductionSymbol &p, const Grammar& g)
+bool is_nullable(const ProductionSymbol &p, const Grammar &g)
 {
     if (p.is_epsilon())
         return true;
@@ -54,12 +56,12 @@ bool is_nullable(const ProductionSymbol &p, const Grammar& g)
     if (productions.rule_contains_epsilon_production())
         return true;
     return std::any_of(productions.get_productions().begin(), productions.get_productions().end(),
-                       [g](Production p) { return is_nullable(p,g); });
+                       [g](Production p) { return is_nullable(p, g); });
 }
 
-bool is_nullable(const Production &p, const Grammar& g)
+bool is_nullable(const Production &p, const Grammar &g)
 {
     auto symbols = p.get_production_symbols();
     return p.is_epsilon() || std::all_of(symbols.begin(), symbols.end(),
-                                         [g](ProductionSymbol p) { return is_nullable(p,g); });
+                                         [g](ProductionSymbol p) { return is_nullable(p, g); });
 }

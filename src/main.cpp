@@ -5,8 +5,8 @@
 #include "argparse/argparse.hpp"
 #include "driver.h"
 #include "first_follow_set_generator.h"
-#include "ll_table_generator.h"
 #include "grammar.h"
+#include "ll_table_generator.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,8 +24,7 @@ int main(int argc, char *argv[])
     bool generate_follow_sets_only = false;
     if (program.is_used("--first")) {
         generate_first_sets_only = true;
-    }
-    else if (program.is_used("--follow")) {
+    } else if (program.is_used("--follow")) {
         generate_follow_sets_only = true;
     }
     auto filename = program.present("-f");
@@ -37,17 +36,21 @@ int main(int argc, char *argv[])
     spdlog::info("grammar: {}", grammar);
 
     FirstFollowSetGenerator sets_generator(grammar);
-    FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets = sets_generator.generate_first_sets();
+    FirstFollowSetGenerator::set_map<ProductionSymbol> first_sets =
+        sets_generator.generate_first_sets();
     spdlog::info("first sets: {}", first_sets);
-    if(generate_first_sets_only) return 0;
+    if (generate_first_sets_only)
+        return 0;
 
-    FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets = sets_generator.generate_follow_sets();
+    FirstFollowSetGenerator::set_map<ProductionSymbol> follow_sets =
+        sets_generator.generate_follow_sets();
     spdlog::info("follow sets: {}", follow_sets);
-    if(generate_follow_sets_only) return 0;
+    if (generate_follow_sets_only)
+        return 0;
 
     auto table = generate_ll_table(grammar, sets_generator);
     spdlog::info("LL-parsing table:");
-    for(auto thing: table){
+    for (auto thing : table) {
         spdlog::info(thing);
     }
 }

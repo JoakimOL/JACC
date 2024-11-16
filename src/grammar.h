@@ -36,10 +36,7 @@ class ProductionSymbol
     {
         return this->raw_symbol == other.raw_symbol && this->kind == other.kind;
     }
-    bool operator!=(const ProductionSymbol &other) const
-    {
-        return !(*this == other);
-    }
+    bool operator!=(const ProductionSymbol &other) const { return !(*this == other); }
 
   private:
     Kind kind;
@@ -48,7 +45,7 @@ class ProductionSymbol
     friend void PrintTo(const ProductionSymbol &p, std::ostream *out);
 };
 
-template <> class fmt::formatter<ProductionSymbol>: fmt::formatter<std::string_view>
+template <> class fmt::formatter<ProductionSymbol> : fmt::formatter<std::string_view>
 {
   public:
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
@@ -90,9 +87,11 @@ class Production
     bool operator==(const Production &other) const
     {
         auto num_symbols = get_num_symbols();
-        if(num_symbols != other.get_num_symbols()) return false;
-        for(size_t i = 0; i < num_symbols; i++){
-            if(production_symbols[i] != other.production_symbols[i]) return false;
+        if (num_symbols != other.get_num_symbols())
+            return false;
+        for (size_t i = 0; i < num_symbols; i++) {
+            if (production_symbols[i] != other.production_symbols[i])
+                return false;
         }
         return true;
     }
