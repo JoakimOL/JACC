@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "fmt/ranges.h"
-#include "spdlog/spdlog.h"
 
 class ProductionSymbol
 {

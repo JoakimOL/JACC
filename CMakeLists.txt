@@ -37,7 +37,6 @@ set(COMMONSOURCES
     src/driver.cpp
     src/first_follow_set_generator.cpp
     src/grammar.cpp
-    src/base_table_generator.cpp
     src/ll_table_generator.cpp
 )
 set(MAINSOURCES

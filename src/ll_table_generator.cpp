@@ -1,6 +1,7 @@
 #include "ll_table_generator.h"
 #include "first_follow_set_generator.h"
 #include "grammar.h"
+#include <spdlog/spdlog.h>
 
 std::map<ProductionSymbol, std::map<ProductionSymbol, Production>>
 generate_ll_table(Grammar &grammar, FirstFollowSetGenerator &sets_generator)

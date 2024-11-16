@@ -12,4 +12,5 @@ generate_ll_table(Grammar &grammar,
 
 bool is_nullable(const Production &p, const Grammar& g);
 bool is_nullable(const ProductionSymbol &p, const Grammar& g);
+
 #endif // LL_TABLE_GENERATOR_H_

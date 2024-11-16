@@ -2,6 +2,8 @@
 #include "grammar.h"
 #include <algorithm>
 #include <iterator>
+#include <spdlog/spdlog.h>
+
 
 namespace
 {
