@@ -46,13 +46,10 @@ class ProductionSymbol
     Kind kind;
     std::optional<std::string> raw_symbol;
     friend class fmt::formatter<ProductionSymbol>;
-    friend void PrintTo(const ProductionSymbol &p, std::ostream *out)
-    {
-        *out << fmt::format("{}", p);
-    }
+    friend void PrintTo(const ProductionSymbol &p, std::ostream *out);
 };
 
-template <> class fmt::formatter<ProductionSymbol>
+template <> class fmt::formatter<ProductionSymbol>: fmt::formatter<std::string_view>
 {
   public:
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
@@ -104,6 +101,7 @@ class Production
   private:
     std::vector<ProductionSymbol> production_symbols;
     friend class fmt::formatter<Production>;
+    friend void PrintTo(const Production &p, std::ostream *out);
 };
 
 template <> class fmt::formatter<Production>

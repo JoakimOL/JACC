@@ -63,8 +63,8 @@ add_executable(fftest ${TESTSOURCES} ${BISON_GrammarParser_OUTPUTS} ${FLEX_Gramm
 target_compile_definitions(fftest PUBLIC EXAMPLE_GRAMMAR_DIR="${CMAKE_CURRENT_SOURCE_DIR}/grammars/")
 
 
-set_target_properties(ffgenerator PROPERTIES CXX_STANDARD 17)
-set_target_properties(fftest PROPERTIES CXX_STANDARD 17)
+set_target_properties(ffgenerator PROPERTIES CXX_STANDARD 20)
+set_target_properties(fftest PROPERTIES CXX_STANDARD 20)
 
 target_include_directories(
     ffgenerator PUBLIC
