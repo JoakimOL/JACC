@@ -12,10 +12,12 @@ First tentative goal is to make an LL parser, as it has fewer requirements. Hope
 - [X] Generate FIRST sets
 - [X] Generate FOLLOW sets
 - [ ] Generate LR item collection
-- [ ] Generate Parsing tables
-  - [ ] LL
+- [X] Generate Parsing tables
+  - [X] LL
   - [ ] LR
-- [ ] Generate Parser
+- [X] Generate Parser
+  - [X] LL
+  - [ ] LR
 - [ ] Implement semantic actions
 
 ## Caveats and gotchas
