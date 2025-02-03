@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 project(firstfollow CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(spdlog REQUIRED)
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
@@ -23,6 +22,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(argparse)
 
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG 8e56133
+)
+FetchContent_MakeAvailable(spdlog)
 # fetch googletest
 FetchContent_Declare(
     googletest
