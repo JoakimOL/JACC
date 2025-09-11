@@ -97,11 +97,13 @@ target_compile_options(ffgenerator PRIVATE
 )
 
 target_link_libraries(ffgenerator PRIVATE
+    fmt::fmt
     spdlog::spdlog
     argparse
 )
 
 target_link_libraries(fftest PRIVATE
+    fmt::fmt
     spdlog::spdlog
     argparse
     GTest::gtest_main
