@@ -53,6 +53,3 @@ const std::optional<GrammarRule> Grammar::get_production(const ProductionSymbol 
     }
     return std::nullopt;
 }
-
-void PrintTo(const ProductionSymbol &p, std::ostream *out) { *out << fmt::format("{}", p); }
-void PrintTo(const Production &p, std::ostream *out) { *out << fmt::format("{}", p); }
