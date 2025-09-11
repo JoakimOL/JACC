@@ -34,6 +34,7 @@ generate_ll_table(Grammar &grammar, FirstFollowSetGenerator &sets_generator)
         if (contains_epsilon) {
             auto follow_set = sets_generator.generate_follow_sets();
             auto epsilon_production = Production(ProductionSymbol::create_epsilon());
+            epsilon_production.synthesized_LHS = LHS;
             auto current_follow_set = follow_set[LHS];
             spdlog::debug("follow set: {}", current_follow_set);
             for (auto &production_symbol : current_follow_set) {
@@ -55,8 +56,8 @@ bool is_nullable(const ProductionSymbol &p, const Grammar &g)
     auto productions = g.get_production(p).value();
     if (productions.rule_contains_epsilon_production())
         return true;
-    return std::any_of(productions.get_productions().begin(), productions.get_productions().end(),
-                       [g](Production p) { return is_nullable(p, g); });
+    return std::any_of(productions.get_productions().cbegin(), productions.get_productions().cend(),
+                       [g](const Production& p) { return is_nullable(p, g); });
 }
 
 bool is_nullable(const Production &p, const Grammar &g)

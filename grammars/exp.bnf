@@ -1,14 +1,14 @@
 E : T E';
 
-E' : '+' T E'
+E' : + T E'
       | _EPSILON_
       ;
 
 T : F T';
-T' : '*' F T'
-      | _epsilon_
+T' : * F T'
+      | _EPSILON_
       ;
 
-F : '(' E ')'
-  | 'id'
+F : ( E )
+  | id
   ;

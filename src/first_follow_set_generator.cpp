@@ -101,7 +101,7 @@ FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::gene
 {
     if (follow_initialized)
         return follow_sets;
-    auto rules = grammar.get_rules();
+    const auto rules = grammar.get_rules();
     // assuming start symbol is the first symbol
     follow_sets[rules.front().get_LHS()] =
         std::set<ProductionSymbol>{ProductionSymbol::create_EOI()};
@@ -110,8 +110,8 @@ FirstFollowSetGenerator::set_map<ProductionSymbol> FirstFollowSetGenerator::gene
     while (keep_going) {
         keep_going = false;
 
-        for (auto &rule : rules) {
-            auto LHS = rule.get_LHS();
+        for (const auto &rule : rules) {
+            const auto LHS = rule.get_LHS();
             spdlog::debug("rule {}", rule);
             if (follow_sets.find(LHS) == follow_sets.end())
                 follow_sets[LHS] = std::set<ProductionSymbol>{};

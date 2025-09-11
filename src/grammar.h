@@ -27,6 +27,9 @@ class ProductionSymbol
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
     bool is_EOI() const { return kind == Kind::EndOfInput; }
+    const std::optional<std::string>& get_raw_symbol() const {
+      return raw_symbol;
+    }
 
     static ProductionSymbol create_epsilon();
     static ProductionSymbol create_EOI();
@@ -139,7 +142,7 @@ class GrammarRule
     }
 
     const ProductionSymbol &get_LHS() const { return LHS; }
-    std::vector<Production> &get_productions() { return RHS; }
+    const std::vector<Production> &get_productions() const { return RHS; }
     const bool rule_contains_epsilon_production() const;
 
   private:
@@ -174,7 +177,7 @@ class Grammar
     explicit Grammar(GrammarRule rule) : rules({rule}) {}
     explicit Grammar(std::vector<GrammarRule> rules) : rules(rules) {}
 
-    std::vector<GrammarRule> &get_rules() { return rules; }
+    const std::vector<GrammarRule> &get_rules() const { return rules; }
     const std::optional<GrammarRule> get_production(const ProductionSymbol &p) const;
     std::optional<std::vector<Production>> get_rules_containing_symbol(const ProductionSymbol &p);
 

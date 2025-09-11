@@ -49,6 +49,7 @@ set(COMMONSOURCES
     src/first_follow_set_generator.cpp
     src/grammar.cpp
     src/ll_table_generator.cpp
+    src/table_driven_ll_parser.cpp
 )
 set(MAINSOURCES
     src/main.cpp
