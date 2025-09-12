@@ -1,7 +1,7 @@
 #ifndef FIRST_FOLLOW_SET_GENERATOR_H_
 #define FIRST_FOLLOW_SET_GENERATOR_H_
 
-#include "grammar.h"
+#include <jacc/grammar.h>
 #include <map>
 #include <set>
 

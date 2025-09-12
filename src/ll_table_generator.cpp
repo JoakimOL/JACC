@@ -1,6 +1,6 @@
-#include "ll_table_generator.h"
-#include "first_follow_set_generator.h"
-#include "grammar.h"
+#include <jacc/ll_table_generator.h>
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
 #include <spdlog/spdlog.h>
 
 std::map<ProductionSymbol, std::map<ProductionSymbol, Production>>

@@ -1,6 +1,6 @@
 #ifndef TABLE_DRIVEN_LL_PARSER_H_
 #define TABLE_DRIVEN_LL_PARSER_H_
-#include "grammar.h"
+#include <jacc/grammar.h>
 #include <map>
 #include <spdlog/spdlog.h>
 #include <stack>

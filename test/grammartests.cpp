@@ -1,4 +1,4 @@
-#include "grammar.h"
+#include <jacc/grammar.h>
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 

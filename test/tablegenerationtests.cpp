@@ -1,6 +1,6 @@
-#include "first_follow_set_generator.h"
-#include "grammar.h"
-#include "ll_table_generator.h"
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
+#include <jacc/ll_table_generator.h>
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 // #include <spdlog/spdlog.h>

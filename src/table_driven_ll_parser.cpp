@@ -1,5 +1,5 @@
-#include "table_driven_ll_parser.h"
-#include "grammar.h"
+#include <jacc/table_driven_ll_parser.h>
+#include <jacc/grammar.h>
 #include <span>
 #include <spdlog/spdlog.h>
 #include <stack>

@@ -1,6 +1,4 @@
-#include "driver.h"
-
-#include "parser.h"
+#include <jacc/driver.h>
 
 /*
  * Shamelessly "inspired" from GNU Bison example code

@@ -1,8 +1,8 @@
 #ifndef LL_TABLE_GENERATOR_H_
 #define LL_TABLE_GENERATOR_H_
 
-#include "first_follow_set_generator.h"
-#include "grammar.h"
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
 
 #include <map>
 

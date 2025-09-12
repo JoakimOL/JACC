@@ -1,5 +1,5 @@
-#include "first_follow_set_generator.h"
-#include "grammar.h"
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
 #include <algorithm>
 #include <iterator>
 #include <spdlog/spdlog.h>

@@ -1,6 +1,6 @@
-#include "driver.h"
-#include "first_follow_set_generator.h"
-#include "grammar.h"
+#include <jacc/driver.h>
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
 #include <fmt/core.h>
 #include <gtest/gtest.h>
 

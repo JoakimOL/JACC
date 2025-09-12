@@ -2,7 +2,7 @@
 # include <string>
 
 # include <spdlog/spdlog.h>
-# include "driver.h"
+# include <jacc/driver.h>
 # include "parser.h"
 %}
 

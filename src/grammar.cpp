@@ -1,4 +1,4 @@
-#include "grammar.h"
+#include <jacc/grammar.h>
 #include <spdlog/spdlog.h>
 
 ProductionSymbol ProductionSymbol::create_epsilon()

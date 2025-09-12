@@ -2,7 +2,7 @@
 #define DRIVER_HH
 #include <string>
 
-#include "grammar.h"
+#include <jacc/grammar.h>
 #include "parser.h"
 
 /*

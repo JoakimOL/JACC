@@ -5,11 +5,11 @@
 #include <stdexcept>
 
 #include "argparse/argparse.hpp"
-#include "driver.h"
-#include "first_follow_set_generator.h"
-#include "grammar.h"
-#include "ll_table_generator.h"
-#include "table_driven_ll_parser.h"
+#include <jacc/driver.h>
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
+#include <jacc/ll_table_generator.h>
+#include <jacc/table_driven_ll_parser.h>
 
 int main(int argc, char *argv[])
 {
@@ -66,15 +66,26 @@ int main(int argc, char *argv[])
         return 0;
 
     auto input = std::vector<ProductionSymbol>{
-        ProductionSymbol("(", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol(")", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("+", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("{", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("key", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("colon", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("42", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("key", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("colon", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("42", ProductionSymbol::Kind::Terminal),
+        ProductionSymbol("}", ProductionSymbol::Kind::Terminal),
+        // ProductionSymbol("(", ProductionSymbol::Kind::Terminal),
+        // ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
+        // ProductionSymbol(")", ProductionSymbol::Kind::Terminal),
+        // ProductionSymbol("+", ProductionSymbol::Kind::Terminal),
+        // ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
     };
     spdlog::info(input);
+    spdlog::info("first thing of grammar: {}", grammar.get_rules().front());
 
-    LLParser parser{table, ProductionSymbol("E", ProductionSymbol::Kind::NonTerminal)};
+
+    // LLParser parser{table, ProductionSymbol("E", ProductionSymbol::Kind::NonTerminal)};
+    LLParser parser{table, ProductionSymbol("S", ProductionSymbol::Kind::NonTerminal)};
 
     if (parser.parse(input)) {
         spdlog::info("Success!");

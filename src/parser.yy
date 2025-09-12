@@ -11,7 +11,7 @@
 %code requires {
     #include <string>
     #include <spdlog/spdlog.h>
-    #include "grammar.h"
+    #include <jacc/grammar.h>
     class Driver;
 }
 
@@ -25,7 +25,7 @@
 %define parse.lac full
 
 %code {
-    #include "driver.h"
+    #include <jacc/driver.h>
 }
 
 %define api.token.prefix {TOK_}
