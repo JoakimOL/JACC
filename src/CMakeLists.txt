@@ -41,7 +41,6 @@ target_compile_options(jacc PRIVATE
 target_link_libraries(jacc PRIVATE
   fmt::fmt
   spdlog::spdlog
-  argparse
 )
 
 # All users of this library will need at least C++20

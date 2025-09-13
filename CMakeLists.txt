@@ -17,13 +17,6 @@ endif()
 
 include(FetchContent)
 
-# fetch argparse
-fetchcontent_declare(
-    argparse
-    GIT_REPOSITORY https://github.com/p-ranav/argparse.git
-    GIT_TAG af442b4
-)
-fetchcontent_makeavailable(argparse)
 FetchContent_Declare(
   fmt
   GIT_REPOSITORY https://github.com/fmtlib/fmt

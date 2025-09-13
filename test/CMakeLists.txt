@@ -12,7 +12,7 @@ set(TESTSOURCES
 )
 add_executable(fftest ${TESTSOURCES})
 target_compile_definitions(fftest PUBLIC EXAMPLE_GRAMMAR_DIR="${CMAKE_SOURCE_DIR}/grammars/")
-target_link_libraries(fftest PRIVATE jacc GTest::gtest_main)
+target_link_libraries(fftest PRIVATE jacc fmt::fmt spdlog::spdlog GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(fftest)
 
