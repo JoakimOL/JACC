@@ -2,8 +2,10 @@
 # fetch googletest
 FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/7c07a863693b0c831f80473f7c6905d7e458682c.zip
+    GIT_REPOSITORY https://github.com/google/googletest    
+    GIT_TAG b514bdc
 )
+
 FetchContent_MakeAvailable(googletest)
 set(TESTSOURCES
   grammartests.cpp
