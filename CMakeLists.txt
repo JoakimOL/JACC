@@ -13,7 +13,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   # ensure -std=c++xx instead of -std=g++xx
   set(cmake_cxx_extensions off)
 
+  set(JACC_IS_TOP_LEVEL ON)
+else()
+  set(JACC_IS_TOP_LEVEL OFF)
 endif()
+
+option(JACC_BUILD_APP "Build jacc's own app/ executable" ${JACC_IS_TOP_LEVEL})
+option(JACC_BUILD_TESTS "Build jacc's own test/ suite" ${JACC_IS_TOP_LEVEL})
 
 include(FetchContent)
 
@@ -33,7 +39,11 @@ FetchContent_MakeAvailable(spdlog)
 add_subdirectory(src)
 
 # application code is here
-add_subdirectory(app)
+if(JACC_BUILD_APP)
+  add_subdirectory(app)
+endif()
 
 # test code is here
-add_subdirectory(test)
+if(JACC_BUILD_TESTS)
+  add_subdirectory(test)
+endif()
