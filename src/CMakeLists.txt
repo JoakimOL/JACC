@@ -8,9 +8,6 @@ FLEX_TARGET(GrammarLexer lexer.ll ${CMAKE_CURRENT_BINARY_DIR}/generated/lexer.cp
     DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/generated/lexer.h)
 
 ADD_FLEX_BISON_DEPENDENCY(GrammarLexer GrammarParser)
-add_custom_target(generate-directory ALL
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/generated
-)
 
 add_library(jacc
     driver.cpp
