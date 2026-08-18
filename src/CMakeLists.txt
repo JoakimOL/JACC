@@ -33,6 +33,15 @@ target_compile_options(jacc PRIVATE
   -pedantic
 )
 
+# Bison's generated parser declares yynerrs_ but only reads it when the
+# grammar uses error recovery/verbose errors; newer GCC flags it as
+# set-but-unused. Don't fail the build on this one warning in generated code.
+set_source_files_properties(
+  ${BISON_GrammarParser_OUTPUTS}
+  PROPERTIES
+  COMPILE_OPTIONS "-Wno-error=unused-but-set-variable"
+)
+
 # target_include_directories(jacc PUBLIC ../include)
 
 target_link_libraries(jacc PRIVATE
