@@ -1,5 +1,5 @@
-#include <jacc/table_driven_ll_parser.h>
 #include <jacc/grammar.h>
+#include <jacc/table_driven_ll_parser.h>
 #include <span>
 #include <spdlog/spdlog.h>
 #include <stack>
@@ -34,7 +34,7 @@ std::expected<void, ParseError> LLParser::parse(std::vector<ProductionSymbol> &i
         }
     }
     spdlog::info("context has error: {}", context.parse_error_to_string(context.error));
-    if(context.error == ParseContext::ErrorType::NOERROR){
+    if (context.error == ParseContext::ErrorType::NOERROR) {
         return {};
     }
     return std::unexpected(context.error_detail.value());
@@ -49,12 +49,10 @@ void LLParser::handle_current_symbol(const ProductionSymbol &current, const Prod
         context.inputIndex++;
         if (top == eoi_symbol && context.parse_stack.empty()) {
             context.done = true;
-        }
-        else{
+        } else {
             spdlog::debug("wot {}", current.get_raw_symbol().value_or("epsilon"));
         }
     } else if (top.is_nonTerminal()) {
-        // spdlog::debug("parse_table[{}]:{}", top, parse_table[top]);
         auto top_it = parse_table.find(top);
         if (top_it == parse_table.end() || !top_it->second.contains(current)) {
             std::vector<std::string> expected;
@@ -70,25 +68,31 @@ void LLParser::handle_current_symbol(const ProductionSymbol &current, const Prod
     } else {
         spdlog::debug("terminal mismatch");
         context.error = ParseContext::ErrorType::TERMINALMISMATCH;
-        context.error_detail = build_parse_error(current, {top.get_raw_symbol().value_or("epsilon")});
+        context.error_detail =
+            build_parse_error(current, {top.get_raw_symbol().value_or("epsilon")});
     }
 }
 
 void LLParser::push_production_to_stack(const Production &production)
 {
-    spdlog::debug("what {}->{}", production.synthesized_LHS.value().get_raw_symbol().value_or("epsilon"), production);
+    spdlog::debug("what {}->{}",
+                  production.synthesized_LHS.value().get_raw_symbol().value_or("epsilon"),
+                  production);
     if (production.is_epsilon()) {
         spdlog::debug("pushing epsilon production to stack");
         return;
     }
-    spdlog::debug("pushing {}->{} to stack in reversed order", production.synthesized_LHS.value(), production);
+    spdlog::debug("pushing {}->{} to stack in reversed order", production.synthesized_LHS.value(),
+                  production);
     for (auto it = production.get_production_symbols().rbegin();
          it != production.get_production_symbols().rend(); ++it) {
         context.parse_stack.push(*it);
     }
 }
 
-ParseError LLParser::build_parse_error(const ProductionSymbol & current, const std::vector<std::string>& expected){
+ParseError LLParser::build_parse_error(const ProductionSymbol &current,
+                                       const std::vector<std::string> &expected)
+{
     auto pos = current.get_loc();
     std::string got = pos && !pos->lexeme.empty()
                           ? fmt::format("'{}'", pos->lexeme)

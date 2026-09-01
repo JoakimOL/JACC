@@ -1,7 +1,7 @@
-#include <jacc/first_follow_set_generator.h>
-#include <jacc/grammar.h>
 #include <algorithm>
 #include <iterator>
+#include <jacc/first_follow_set_generator.h>
+#include <jacc/grammar.h>
 #include <spdlog/spdlog.h>
 
 namespace

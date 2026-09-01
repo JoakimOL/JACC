@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 #include <stack>
 
-struct ParseError{
+struct ParseError {
     std::string message;
     size_t offset = 0;
     size_t line = 0;
@@ -64,7 +64,8 @@ class LLParser
     };
     void handle_current_symbol(const ProductionSymbol &current, const ProductionSymbol &top);
     void push_production_to_stack(const Production &production);
-    ParseError build_parse_error(const ProductionSymbol & current, const std::vector<std::string>& expected);
+    ParseError build_parse_error(const ProductionSymbol &current,
+                                 const std::vector<std::string> &expected);
     ParseTable parse_table;
     ParseContext context;
     ProductionSymbol eoi_symbol = ProductionSymbol::create_EOI();

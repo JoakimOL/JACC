@@ -1,6 +1,6 @@
-#include <jacc/ll_table_generator.h>
 #include <jacc/first_follow_set_generator.h>
 #include <jacc/grammar.h>
+#include <jacc/ll_table_generator.h>
 #include <spdlog/spdlog.h>
 
 std::map<ProductionSymbol, std::map<ProductionSymbol, Production>>
@@ -57,7 +57,7 @@ bool is_nullable(const ProductionSymbol &p, const Grammar &g)
     if (productions.rule_contains_epsilon_production())
         return true;
     return std::any_of(productions.get_productions().cbegin(), productions.get_productions().cend(),
-                       [g](const Production& p) { return is_nullable(p, g); });
+                       [g](const Production &p) { return is_nullable(p, g); });
 }
 
 bool is_nullable(const Production &p, const Grammar &g)

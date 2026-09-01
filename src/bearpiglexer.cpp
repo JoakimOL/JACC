@@ -33,7 +33,8 @@ bool get_tokens_from_file(std::filesystem::path path, std::vector<bp::TokenRule>
         if (found == std::string::npos) {
             return false;
         }
-        rules.emplace_back(trim_whitespace(line.substr(0, found)), trim_whitespace(line.substr(found + 1)));
+        rules.emplace_back(trim_whitespace(line.substr(0, found)),
+                           trim_whitespace(line.substr(found + 1)));
     }
     return true;
 }

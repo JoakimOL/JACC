@@ -20,23 +20,31 @@ int main(int argc, char *argv[])
 {
     argparse::ArgumentParser program(argv[0]);
     program.add_argument("-f").required().help("path to grammar file").metavar("filename");
-    program.add_argument("-v").default_value(false).implicit_value(true).help("enable verbose logging");
-    program.add_argument("--grammar").default_value(false).implicit_value(true).help("stop after parsing the input grammar");
-    program.add_argument("--first").default_value(false).implicit_value(true).help("stop after generating first sets");
-    program.add_argument("--follow").default_value(false).implicit_value(true).help("stop after generating follow sets");
-    program.add_argument("--ll").default_value(false).implicit_value(true).help("stop after generating the LL(1) parse table");
-    try{
     program.add_argument("-t").required().help("path to tokens file").metavar("tokens");
+    program.add_argument("-v").default_value(false).implicit_value(true).help(
+        "enable verbose logging");
     program.add_argument("--lex").default_value(false).implicit_value(true).help(
         "stop after lexing");
+    program.add_argument("--grammar")
+        .default_value(false)
+        .implicit_value(true)
+        .help("stop after parsing the input grammar");
+    program.add_argument("--first").default_value(false).implicit_value(true).help(
+        "stop after generating first sets");
+    program.add_argument("--follow")
+        .default_value(false)
+        .implicit_value(true)
+        .help("stop after generating follow sets");
+    program.add_argument("--ll").default_value(false).implicit_value(true).help(
+        "stop after generating the LL(1) parse table");
+    program.add_argument("input").help("input string to parse");
+    try {
         program.parse_args(argc, argv);
-    }
-    catch(const std::runtime_error& e){
-     // why did you have to use exceptions, mr argparse-developer
+    } catch (const std::runtime_error &e) {
+        // why did you have to use exceptions, mr argparse-developer
         spdlog::error(e.what());
         exit(1);
     }
-
 
     if (program.is_used("-v")) {
         spdlog::set_level(spdlog::level::debug);
@@ -51,7 +59,7 @@ int main(int argc, char *argv[])
     std::vector<bp::TokenRule> rules;
     get_tokens_from_file(*tokenfilename, rules);
     add_skip_whitespace_rule(rules);
-    for(auto rule: rules){
+    for (auto rule : rules) {
         spdlog::info("name: {} pattern: {}", rule.name, rule.pattern);
     }
     bp::Lexer lexer{rules};
@@ -69,7 +77,8 @@ int main(int argc, char *argv[])
     auto result = result_expected.value();
     auto input = std::vector<ProductionSymbol>{};
     std::for_each(result.begin(), result.end(), [&input](const bp::Token &token) {
-        spdlog::info("token {}: \"{}\" (line {} column {})", token.name, token.lexeme, token.line, token.column);
+        spdlog::info("token {}: \"{}\" (line {} column {})", token.name, token.lexeme, token.line,
+                     token.column);
         input.emplace_back(
             token.name, ProductionSymbol::Kind::Terminal,
             ProductionSymbolLoc{token.lexeme, token.offset, token.line, token.column});

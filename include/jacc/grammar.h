@@ -7,11 +7,11 @@
 #include <string>
 #include <vector>
 
-#include "fmt/ranges.h"
-#include "fmt/format.h"
 #include "fmt/base.h"
+#include "fmt/format.h"
+#include "fmt/ranges.h"
 
-struct ProductionSymbolLoc{
+struct ProductionSymbolLoc {
     std::string lexeme;
     size_t offset = 0;
     size_t line = 0;
@@ -22,7 +22,11 @@ class ProductionSymbol
 {
   public:
     enum class Kind { Uninitialized, NonTerminal, Terminal, EndOfInput };
-    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind, std::optional<ProductionSymbolLoc> loc = std::nullopt) : kind{kind}, raw_symbol{symbol}, loc{loc} {}
+    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind,
+                     std::optional<ProductionSymbolLoc> loc = std::nullopt)
+        : kind{kind}, raw_symbol{symbol}, loc{loc}
+    {
+    }
 
     ProductionSymbol() : kind(Kind::Uninitialized) {}
 
@@ -31,10 +35,8 @@ class ProductionSymbol
     bool is_initialized() const { return kind != Kind::Uninitialized; }
     bool is_epsilon() const { return !raw_symbol.has_value(); }
     bool is_EOI() const { return kind == Kind::EndOfInput; }
-    const std::optional<std::string>& get_raw_symbol() const {
-      return raw_symbol;
-    }
-    std::optional<ProductionSymbolLoc> get_loc() const { return loc;}
+    const std::optional<std::string> &get_raw_symbol() const { return raw_symbol; }
+    std::optional<ProductionSymbolLoc> get_loc() const { return loc; }
 
     static ProductionSymbol create_epsilon();
     static ProductionSymbol create_EOI();
@@ -59,7 +61,8 @@ class ProductionSymbol
 template <> struct fmt::formatter<ProductionSymbol> {
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
     template <typename FormatContext>
-    auto format(const ProductionSymbol & ps, FormatContext& ctx) const {
+    auto format(const ProductionSymbol &ps, FormatContext &ctx) const
+    {
         return fmt::format_to(ctx.out(), "{}", ps.raw_symbol.value_or("epsilon"));
     }
 };
@@ -109,21 +112,18 @@ class Production
     friend struct fmt::formatter<Production>;
 };
 
-template <>
-struct fmt::formatter<Production> {
+template <> struct fmt::formatter<Production> {
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
-    template <typename FormatContext>
-    auto format(const Production& p, FormatContext& ctx) const {
+    template <typename FormatContext> auto format(const Production &p, FormatContext &ctx) const
+    {
         std::string rhs_str = std::accumulate(
-            p.get_production_symbols().begin(),
-            p.get_production_symbols().end(),
-            std::string{},
-            [](const std::string& lhs, const ProductionSymbol& rhs){
+            p.get_production_symbols().begin(), p.get_production_symbols().end(), std::string{},
+            [](const std::string &lhs, const ProductionSymbol &rhs) {
                 return lhs.empty() ? fmt::format("{}", rhs) : fmt::format("{} {}", lhs, rhs);
-            }
-        );
-        
-        // return fmt::format_to(ctx.out(), "{} -> {}", p.synthesized_LHS.has_value() ? p.synthesized_LHS->get_raw_symbol().value() : "ε", rhs_str);
+            });
+
+        // return fmt::format_to(ctx.out(), "{} -> {}", p.synthesized_LHS.has_value() ?
+        // p.synthesized_LHS->get_raw_symbol().value() : "ε", rhs_str);
         return format_to(ctx.out(), "{}", rhs_str);
     }
 };
@@ -157,21 +157,16 @@ class GrammarRule
     friend class fmt::formatter<GrammarRule>;
 };
 
-
-template <>
-struct fmt::formatter<GrammarRule> {
+template <> struct fmt::formatter<GrammarRule> {
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
-    template <typename FormatContext>
-    auto format(const GrammarRule& gr, FormatContext& ctx) const {
+    template <typename FormatContext> auto format(const GrammarRule &gr, FormatContext &ctx) const
+    {
         std::string rhs_str = std::accumulate(
-            gr.get_productions().begin(),
-            gr.get_productions().end(),
-            std::string{},
-            [](const std::string& lhs, const Production& rhs){
+            gr.get_productions().begin(), gr.get_productions().end(), std::string{},
+            [](const std::string &lhs, const Production &rhs) {
                 return lhs.empty() ? fmt::format("{}", rhs) : fmt::format("{} | {}", lhs, rhs);
-            }
-        );
-        
+            });
+
         return fmt::format_to(ctx.out(), "{} -> {}", gr.get_LHS(), rhs_str);
     }
 };
@@ -193,19 +188,15 @@ class Grammar
     friend class fmt::formatter<Grammar>;
 };
 
-template <>
-struct fmt::formatter<Grammar> {
+template <> struct fmt::formatter<Grammar> {
     constexpr auto parse(format_parse_context &ctx) { return ctx.end(); }
-    template <typename FormatContext>
-    auto format(const Grammar& g, FormatContext& ctx) const {
+    template <typename FormatContext> auto format(const Grammar &g, FormatContext &ctx) const
+    {
         std::string rules_str = std::accumulate(
-            g.get_rules().begin(),
-            g.get_rules().end(),
-            std::string{},
-            [](const std::string& lhs, const GrammarRule& rhs){
+            g.get_rules().begin(), g.get_rules().end(), std::string{},
+            [](const std::string &lhs, const GrammarRule &rhs) {
                 return lhs.empty() ? fmt::format("{};", rhs) : fmt::format("{} {};", lhs, rhs);
-            }
-        );
+            });
         return fmt::format_to(ctx.out(), "{}", rules_str);
     }
 };
