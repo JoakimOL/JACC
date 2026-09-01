@@ -4,7 +4,7 @@
 #include <spdlog/spdlog.h>
 #include <stack>
 
-bool LLParser::parse(std::vector<ProductionSymbol> &input)
+std::expected<void, ParseError> LLParser::parse(std::vector<ProductionSymbol> &input)
 {
     input.push_back(eoi_symbol);
     context.parse_stack.push(eoi_symbol);
@@ -34,7 +34,10 @@ bool LLParser::parse(std::vector<ProductionSymbol> &input)
         }
     }
     spdlog::info("context has error: {}", context.parse_error_to_string(context.error));
-    return context.error == ParseContext::ErrorType::NOERROR;
+    if(context.error == ParseContext::ErrorType::NOERROR){
+        return {};
+    }
+    return std::unexpected(context.error_detail.value());
 }
 
 void LLParser::handle_current_symbol(const ProductionSymbol &current, const ProductionSymbol &top)
@@ -52,18 +55,22 @@ void LLParser::handle_current_symbol(const ProductionSymbol &current, const Prod
         }
     } else if (top.is_nonTerminal()) {
         // spdlog::debug("parse_table[{}]:{}", top, parse_table[top]);
-        spdlog::debug("parse_table[{}][{}]:{}", top, current, parse_table[top][current]);
-        if (parse_table[top][current].get_num_symbols() == 0) {
-            spdlog::debug("no matching production");
+        auto top_it = parse_table.find(top);
+        if (top_it == parse_table.end() || !top_it->second.contains(current)) {
+            std::vector<std::string> expected;
+            if (top_it != parse_table.end())
+                for (const auto &[symbol, production] : top_it->second)
+                    expected.push_back(symbol.get_raw_symbol().value_or("epsilon"));
             context.error = ParseContext::ErrorType::NOMATCHINGPRODUCTION;
+            context.error_detail = build_parse_error(current, expected);
             return;
         }
         context.parse_stack.pop();
-        auto production = parse_table[top][current];
-        push_production_to_stack(production);
+        push_production_to_stack(top_it->second.at(current));
     } else {
         spdlog::debug("terminal mismatch");
         context.error = ParseContext::ErrorType::TERMINALMISMATCH;
+        context.error_detail = build_parse_error(current, {top.get_raw_symbol().value_or("epsilon")});
     }
 }
 
@@ -79,4 +86,15 @@ void LLParser::push_production_to_stack(const Production &production)
          it != production.get_production_symbols().rend(); ++it) {
         context.parse_stack.push(*it);
     }
+}
+
+ParseError LLParser::build_parse_error(const ProductionSymbol & current, const std::vector<std::string>& expected){
+    auto pos = current.get_loc();
+    std::string got = pos && !pos->lexeme.empty()
+                          ? fmt::format("'{}'", pos->lexeme)
+                          : fmt::format("'{}'", current.get_raw_symbol().value_or("epsilon"));
+    std::string message = expected.empty() ? fmt::format("unexpected {}", got)
+                                           : fmt::format("unexpected {}, expected one of: {}", got,
+                                                         fmt::join(expected, ", "));
+    return ParseError{message, pos ? pos->offset : 0, pos ? pos->line : 0, pos ? pos->column : 0};
 }

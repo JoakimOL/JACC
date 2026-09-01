@@ -1,15 +1,24 @@
 #ifndef TABLE_DRIVEN_LL_PARSER_H_
 #define TABLE_DRIVEN_LL_PARSER_H_
+#include <expected>
 #include <jacc/grammar.h>
 #include <map>
 #include <spdlog/spdlog.h>
 #include <stack>
+
+struct ParseError{
+    std::string message;
+    size_t offset = 0;
+    size_t line = 0;
+    size_t column = 0;
+};
+
 class LLParser
 {
     using ParseTable = std::map<ProductionSymbol, std::map<ProductionSymbol, Production>>;
 
   public:
-    bool parse(std::vector<ProductionSymbol> &input);
+    std::expected<void, ParseError> parse(std::vector<ProductionSymbol> &input);
     LLParser(ParseTable table, ProductionSymbol start_symbol)
         : parse_table(table), context(start_symbol)
     {
@@ -43,16 +52,19 @@ class LLParser
         size_t inputIndex = 0;
         std::stack<ProductionSymbol> parse_stack;
         ProductionSymbol start_symbol;
+        std::optional<ParseError> error_detail;
         void reset()
         {
             done = false;
             error = ErrorType::NOERROR;
+            error_detail = std::nullopt;
             inputIndex = 0;
             parse_stack = std::stack<ProductionSymbol>();
         }
     };
     void handle_current_symbol(const ProductionSymbol &current, const ProductionSymbol &top);
     void push_production_to_stack(const Production &production);
+    ParseError build_parse_error(const ProductionSymbol & current, const std::vector<std::string>& expected);
     ParseTable parse_table;
     ParseContext context;
     ProductionSymbol eoi_symbol = ProductionSymbol::create_EOI();

@@ -111,10 +111,12 @@ int main(int argc, char *argv[])
 
     LLParser parser{table, grammar.get_rules().front().get_LHS()};
 
-
-    if (parser.parse(input)) {
-        spdlog::info("Success!");
-    } else {
-        spdlog::info("Task succeeded with failure");
+    auto parse_result = parser.parse(input);
+    if (!parse_result.has_value()) {
+        const auto &error = parse_result.error();
+        spdlog::error("parser error: {} at line {} column {}", error.message, error.line,
+                      error.column);
+        return 1;
     }
+    spdlog::info("Success!");
 }

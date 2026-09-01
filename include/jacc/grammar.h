@@ -11,14 +11,18 @@
 #include "fmt/format.h"
 #include "fmt/base.h"
 
+struct ProductionSymbolLoc{
+    std::string lexeme;
+    size_t offset = 0;
+    size_t line = 0;
+    size_t column = 0;
+};
+
 class ProductionSymbol
 {
   public:
     enum class Kind { Uninitialized, NonTerminal, Terminal, EndOfInput };
-    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind)
-        : kind(kind), raw_symbol(symbol)
-    {
-    }
+    ProductionSymbol(const std::optional<std::string> &symbol, Kind kind, std::optional<ProductionSymbolLoc> loc = std::nullopt) : kind{kind}, raw_symbol{symbol}, loc{loc} {}
 
     ProductionSymbol() : kind(Kind::Uninitialized) {}
 
@@ -30,6 +34,7 @@ class ProductionSymbol
     const std::optional<std::string>& get_raw_symbol() const {
       return raw_symbol;
     }
+    std::optional<ProductionSymbolLoc> get_loc() const { return loc;}
 
     static ProductionSymbol create_epsilon();
     static ProductionSymbol create_EOI();
@@ -47,6 +52,7 @@ class ProductionSymbol
   private:
     Kind kind;
     std::optional<std::string> raw_symbol;
+    std::optional<ProductionSymbolLoc> loc;
     friend struct fmt::formatter<ProductionSymbol>;
 };
 
