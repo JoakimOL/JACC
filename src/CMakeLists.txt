@@ -15,6 +15,7 @@ add_library(jacc
     grammar.cpp
     ll_table_generator.cpp
     table_driven_ll_parser.cpp
+    bearpiglexer.cpp
     ${BISON_GrammarParser_OUTPUTS}
     ${FLEX_GrammarLexer_OUTPUTS}
 )
@@ -44,9 +45,12 @@ set_source_files_properties(
 
 # target_include_directories(jacc PUBLIC ../include)
 
-target_link_libraries(jacc PRIVATE
+target_link_libraries(jacc PUBLIC
   fmt::fmt
+)
+target_link_libraries(jacc PRIVATE
   spdlog::spdlog
+  libbearpig
 )
 
 # All users of this library will need at least C++20

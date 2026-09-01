@@ -1,15 +1,20 @@
+#include <algorithm>
 #include <fmt/base.h>
 #include <spdlog/spdlog.h>
 
 #include <optional>
 #include <stdexcept>
+#include <vector>
 
 #include "argparse/argparse.hpp"
+#include <jacc/bearpiglexer.h>
 #include <jacc/driver.h>
 #include <jacc/first_follow_set_generator.h>
 #include <jacc/grammar.h>
 #include <jacc/ll_table_generator.h>
 #include <jacc/table_driven_ll_parser.h>
+#include <libbearpig/lexer.h>
+#include <libbearpig/token.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +26,9 @@ int main(int argc, char *argv[])
     program.add_argument("--follow").default_value(false).implicit_value(true).help("stop after generating follow sets");
     program.add_argument("--ll").default_value(false).implicit_value(true).help("stop after generating the LL(1) parse table");
     try{
+    program.add_argument("-t").required().help("path to tokens file").metavar("tokens");
+    program.add_argument("--lex").default_value(false).implicit_value(true).help(
+        "stop after lexing");
         program.parse_args(argc, argv);
     }
     catch(const std::runtime_error& e){
@@ -36,6 +44,39 @@ int main(int argc, char *argv[])
 
     auto filename = program.present("-f");
     spdlog::info("filename: {}", filename.has_value() ? *filename : "nullopt");
+
+    auto tokenfilename = program.present("-t");
+    spdlog::info("tokenfilename: {}", tokenfilename.has_value() ? *tokenfilename : "nullopt");
+
+    std::vector<bp::TokenRule> rules;
+    get_tokens_from_file(*tokenfilename, rules);
+    add_skip_whitespace_rule(rules);
+    for(auto rule: rules){
+        spdlog::info("name: {} pattern: {}", rule.name, rule.pattern);
+    }
+    bp::Lexer lexer{rules};
+
+    auto cmd_input = program.get<std::string>("input");
+    spdlog::info("{}", cmd_input);
+    auto result_expected = lexer.tokenize(cmd_input);
+    if (!result_expected.has_value()) {
+        const auto &error = result_expected.error();
+        spdlog::error("lexer error: {} at line {} column {}", error.message, error.line,
+                      error.column);
+        return 1;
+    }
+
+    auto result = result_expected.value();
+    auto input = std::vector<ProductionSymbol>{};
+    std::for_each(result.begin(), result.end(), [&input](const bp::Token &token) {
+        spdlog::info("token {}: \"{}\" (line {} column {})", token.name, token.lexeme, token.line, token.column);
+        input.emplace_back(
+            token.name, ProductionSymbol::Kind::Terminal,
+            ProductionSymbolLoc{token.lexeme, token.offset, token.line, token.column});
+    });
+
+    if (program.is_used("--lex"))
+        return 0;
 
     Driver driver;
     driver.parse(filename.value());
@@ -65,27 +106,11 @@ int main(int argc, char *argv[])
     if (program.is_used("--ll"))
         return 0;
 
-    auto input = std::vector<ProductionSymbol>{
-        ProductionSymbol("{", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("key", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("colon", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("42", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("key", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("colon", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("42", ProductionSymbol::Kind::Terminal),
-        ProductionSymbol("}", ProductionSymbol::Kind::Terminal),
-        // ProductionSymbol("(", ProductionSymbol::Kind::Terminal),
-        // ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
-        // ProductionSymbol(")", ProductionSymbol::Kind::Terminal),
-        // ProductionSymbol("+", ProductionSymbol::Kind::Terminal),
-        // ProductionSymbol("id", ProductionSymbol::Kind::Terminal),
-    };
     spdlog::info(input);
     spdlog::info("first thing of grammar: {}", grammar.get_rules().front());
 
+    LLParser parser{table, grammar.get_rules().front().get_LHS()};
 
-    // LLParser parser{table, ProductionSymbol("E", ProductionSymbol::Kind::NonTerminal)};
-    LLParser parser{table, ProductionSymbol("S", ProductionSymbol::Kind::NonTerminal)};
 
     if (parser.parse(input)) {
         spdlog::info("Success!");
