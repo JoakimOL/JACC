@@ -1,0 +1,42 @@
+PROGRAM : TOPLEVEL PROGRAM_TAIL;
+PROGRAM_TAIL : TOPLEVEL PROGRAM_TAIL
+             | _EPSILON_;
+
+TOPLEVEL : newtype id equals PARAMETERLIST
+         | id PARAMETERLIST FUNCTION_OR_DECL;
+
+FUNCTION_OR_DECL : assignment BLOCK
+                 | returnarrow TYPE;
+STATEMENT : returnkeyword EXPRESSION semicolon
+          | ifkeyword EXPRESSION STATEMENT
+          | curlopen STATEMENT_LIST curlclose
+          | id STATEMENT_START_WITH_ID;
+
+STATEMENT_LIST : STATEMENT STATEMENT_LIST | _EPSILON_;
+
+STATEMENT_START_WITH_ID : id assignment EXPRESSION semicolon
+                        | ARGUMENTLIST EXPRESSION_TAIL semicolon
+                        | EXPRESSION_TAIL semicolon;
+PARAMETERLIST : parenopen PARAM_TAIL;
+PARAM_TAIL : parenclose
+           | id id parenclose;
+
+ARGUMENTLIST : parenopen EXPRESSION parenclose;
+TYPE : id;
+
+EXPRESSION : TERM EXPRESSION_TAIL;
+
+EXPRESSION_TAIL : BINOP TERM EXPRESSION_TAIL
+                | _EPSILON_
+				;
+
+BLOCK: curlopen STATEMENT curlclose;
+
+TERM : intliteral
+     | stringliteral
+     | parenopen EXPRESSION parenclose
+     | id TERM_START_WITH_ID
+	 ;
+
+TERM_START_WITH_ID : ARGUMENTLIST | _EPSILON_;
+BINOP : equals | lessthan | plus | minus | mul | greaterthan;

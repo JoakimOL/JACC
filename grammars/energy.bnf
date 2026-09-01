@@ -1,4 +1,4 @@
-PROGRAM: TOPLEVEL eof;
+PROGRAM: TOPLEVEL;
 
 TOPLEVEL: FUNCTIONDECLARATION
         | FUNCTIONDEFINITION
@@ -17,21 +17,22 @@ FUNCTIONCALL: ID ARGUMENTLIST;
 VARIABLEDECLARATION: TYPE ID assignment EXPRESSION;
 RETURNSTATEMENT: returnkeyword EXPRESSION;
 
-TYPEDEFINITION: newtype ID '=' PARAMETERLIST;
+TYPEDEFINITION: newtype ID equals PARAMETERLIST;
 
-ARGUMENTLIST: '(' expression ')';
+ARGUMENTLIST: parenopen EXPRESSION parenclose;
 
-PARAMETERLIST: '(' TYPEDVALUE ')';
+PARAMETERLIST: parenopen TYPEDVALUE parenclose
+             | parenopen parenclose
+             ;
 
 EXPRESSIONSTATEMENT: EXPRESSION;
 
-BLOCK: '{' STATEMENT '}';
+BLOCK: curlopen STATEMENT curlclose;
 
 TYPEDVALUE: TYPE ID;
-TYPE: typename
-    | ID;
+TYPE: ID;
 ID: id;
-LITERAL : int
+LITERAL : intliteral
         | stringliteral;
 
 BINOP : equals
@@ -43,6 +44,6 @@ BINOP : equals
 
 EXPRESSION: ID
           | LITERAL
-          | '(' EXPRESSION ')'
+          | parenopen EXPRESSION parenclose
           | EXPRESSION BINOP EXPRESSION
           | FUNCTIONCALL;
