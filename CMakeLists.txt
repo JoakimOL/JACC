@@ -38,7 +38,7 @@ FetchContent_MakeAvailable(spdlog)
 FetchContent_Declare(
   bearpig
   GIT_REPOSITORY https://github.com/joakimol/bearpig
-  GIT_TAG        1a208ae43551d8780d0df40d7bc1a0fdf4c36f89) 
+  GIT_TAG        3812b0b361850c00fa0bfeb838e68f5a7e887bb3) 
 FetchContent_MakeAvailable(bearpig)
 
 # library code is here

@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
                      token.column);
         input.emplace_back(
             token.name, ProductionSymbol::Kind::Terminal,
-            ProductionSymbolLoc{token.lexeme, token.offset, token.line, token.column});
+            ProductionSymbolLoc{token.lexeme, token.length, token.line, token.column});
     });
 
     if (program.is_used("--lex"))

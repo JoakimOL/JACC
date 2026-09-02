@@ -100,5 +100,5 @@ ParseError LLParser::build_parse_error(const ProductionSymbol &current,
     std::string message = expected.empty() ? fmt::format("unexpected {}", got)
                                            : fmt::format("unexpected {}, expected one of: {}", got,
                                                          fmt::join(expected, ", "));
-    return ParseError{message, pos ? pos->offset : 0, pos ? pos->line : 0, pos ? pos->column : 0};
+    return ParseError{message, pos ? pos->length : 0, pos ? pos->line : 0, pos ? pos->column : 0};
 }

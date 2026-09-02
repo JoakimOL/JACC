@@ -8,7 +8,7 @@
 
 struct ParseError {
     std::string message;
-    size_t offset = 0;
+    size_t length = 0;
     size_t line = 0;
     size_t column = 0;
 };
