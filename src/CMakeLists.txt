@@ -47,10 +47,10 @@ set_source_files_properties(
 
 target_link_libraries(jacc PUBLIC
   fmt::fmt
+  libbearpig
 )
 target_link_libraries(jacc PRIVATE
   spdlog::spdlog
-  libbearpig
 )
 
 # All users of this library will need at least C++20
